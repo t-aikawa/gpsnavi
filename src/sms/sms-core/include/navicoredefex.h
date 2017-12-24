@@ -18,6 +18,10 @@
 #ifndef NAVICOREDEFEX_H_
 #define NAVICOREDEFEX_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define NC_MP_MAP_MAIN	(1)		/* 暫定的に定義する By T.Aikawa */
 
 // ロケーション
@@ -64,6 +68,10 @@ INT32 NC_DM_SetIconInfo(const SMMAPDYNUDI *iconInfo, INT32 iconNum);
 INT32 NC_DM_SetDynamicUDIDisplay(const Bool *dispInfo, INT32 dispNum);
 INT32 NC_MP_ScreenToGeoCode(INT32 maps, INT32 screenX, INT32 screenY, SMGEOCOORD* pGeoCoord);
 INT32 NC_MP_SetMapDrawEndCB(NC_DRAWENDINFOFUNCPTR pfunc);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* NAVICOREDEFEX_H_ */
 

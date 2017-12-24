@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "xdg-shell-unstable-v6-client-protocol.h"
+#include "ivi-application-client-protocol.h"
 
 #include "glview.h"
 #include "glview_local.h"
@@ -75,14 +76,14 @@ keyboard_handle_enter(void *data, struct wl_keyboard *keyboard,
                       uint32_t serial, struct wl_surface *surface,
                       struct wl_array *keys)
 {
-    fprintf(stderr, "Keyboard gained focus\n");
+    //fprintf(stderr, "Keyboard gained focus\n");
 }
 
 static void
 keyboard_handle_leave(void *data, struct wl_keyboard *keyboard,
                       uint32_t serial, struct wl_surface *surface)
 {
-    fprintf(stderr, "Keyboard lost focus\n");
+    //fprintf(stderr, "Keyboard lost focus\n");
 }
 
 static void
@@ -103,8 +104,8 @@ keyboard_handle_modifiers(void *data, struct wl_keyboard *keyboard,
                           uint32_t mods_latched, uint32_t mods_locked,
                           uint32_t group)
 {
-    fprintf(stderr, "Modifiers depressed %d, latched %d, locked %d, group %d\n",
-	    mods_depressed, mods_latched, mods_locked, group);
+	//fprintf(stderr, "Modifiers depressed %d, latched %d, locked %d, group %d\n",
+	//    mods_depressed, mods_latched, mods_locked, group);
 }
 
 static const struct wl_keyboard_listener keyboard_listener = {
@@ -128,14 +129,14 @@ pointer_handle_enter(void *data, struct wl_pointer *pointer,
                      uint32_t serial, struct wl_surface *surface,
                      wl_fixed_t sx, wl_fixed_t sy)
 {
-    fprintf(stderr, "Pointer entered surface %p at %d %d\n", surface, sx, sy);
+    //fprintf(stderr, "Pointer entered surface %p at %d %d\n", surface, sx, sy);
 }
 
 static void
 pointer_handle_leave(void *data, struct wl_pointer *pointer,
                      uint32_t serial, struct wl_surface *surface)
 {
-    fprintf(stderr, "Pointer left surface %p\n", surface);
+    //fprintf(stderr, "Pointer left surface %p\n", surface);
 }
 
 static void
@@ -143,7 +144,7 @@ pointer_handle_motion(void *data, struct wl_pointer *pointer,
                       uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
 {
 	GLVMOUSEEVENT_t	glv_mouse_enent;
-    //printf("Pointer moved at %d %d\n", sx, sy);
+    //fprintf(stderr,"Pointer moved at %d %d\n", sx, sy);
     pointer_sx = wl_fixed_to_int(sx);
     pointer_sy = wl_fixed_to_int(sy);
     if(pointer_left == WL_POINTER_BUTTON_STATE_PRESSED){
@@ -162,7 +163,7 @@ pointer_handle_button(void *data, struct wl_pointer *wl_pointer,
 {
 	int rc;
 	GLVMOUSEEVENT_t	glv_mouse_enent;
-    printf("Pointer button\n");
+    //fprintf(stderr,"Pointer button\n");
     if(button == BTN_LEFT){
     	if(state == WL_POINTER_BUTTON_STATE_PRESSED){
     		rc = 0;
@@ -207,7 +208,7 @@ static void
 pointer_handle_axis(void *data, struct wl_pointer *wl_pointer,
                     uint32_t time, uint32_t axis, wl_fixed_t value)
 {
-        printf("Pointer handle axis\n");
+	//fprintf(stderr,"Pointer handle axis\n");
 }
 
 static const struct wl_pointer_listener pointer_listener = {
@@ -227,8 +228,8 @@ touch_handle_down(void *data, struct wl_touch *touch, uint32_t serial,
 	int rc;
 	/* This does not support multi-touch, since implementation is for testing */
 	if (id > 0) {
-		printf("Receive touch down event with touch id(%d), "
-			   "but this is not handled\n", id);
+		//fprintf(stderr,"Receive touch down event with touch id(%d), "
+		//	   "but this is not handled\n", id);
 		return;
 	}
 	struct touch_event_data *touch_event = data;
@@ -335,15 +336,15 @@ seat_handle_capabilities(void *data, struct wl_seat *seat,
                          enum wl_seat_capability caps)
 {
     if (caps & WL_SEAT_CAPABILITY_POINTER) {
-	printf("Display has a pointer\n");
+		//fprintf(stderr,"Display has a pointer\n");
     }
 
     if (caps & WL_SEAT_CAPABILITY_KEYBOARD) {
-	printf("Display has a keyboard\n");
+		//fprintf(stderr,"Display has a keyboard\n");
     }
 
     if (caps & WL_SEAT_CAPABILITY_TOUCH) {
-	printf("Display has a touch screen\n");
+		//fprintf(stderr,"Display has a touch screen\n");
     }
 
     if ((caps & WL_SEAT_CAPABILITY_POINTER) && !pointer) {
@@ -383,7 +384,7 @@ handle_ping(void *data, struct wl_shell_surface *shell_surface,
 	    uint32_t serial)
 {
 	wl_shell_surface_pong(shell_surface, serial);
-	fprintf(stderr, "Pinged and ponged\n");
+	//fprintf(stderr, "Pinged and ponged\n");
 }
 
 // ------------------------------------------------------------------------------------
@@ -460,12 +461,12 @@ registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
 	if (strcmp(interface, "wl_compositor") == 0) {
 		d->compositor = wl_registry_bind(registry, id, &wl_compositor_interface, 1);
 	} else if (strcmp(interface, "zxdg_shell_v6") == 0) {
-		printf("registry:zxdg_shell_v6\n");
+		fprintf(stderr,"glview:registry-interface-zxdg_shell_v6\n");
 		d->xdg_shell = wl_registry_bind(registry, id,&zxdg_shell_v6_interface, 1);
 		zxdg_shell_v6_add_listener(d->xdg_shell, &xdg_shell_listener, d);
 	} else if (strcmp(interface, "wl_shell") == 0) {
-		printf("registry:wl_shell\n");
-		if(!d->xdg_shell){
+		fprintf(stderr,"glview:registry-interface-wl_shell\n");
+		if((0 == d->xdg_shell) && (0 == d->ivi_application) ){
 			d->wl_shell = wl_registry_bind(registry, id, &wl_shell_interface, 1);
 		}
 	}
@@ -485,7 +486,8 @@ registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
    		d->subcompositor = wl_registry_bind(registry, id, &wl_subcompositor_interface, 1);
    	} else if (strcmp(interface, "wl_shm") == 0) {
 	} else if (strcmp(interface, "ivi_application") == 0) {
-		printf("registry:wl_shell\n");
+		fprintf(stderr,"glview:registry-interface-wl_shell\n");
+		d->ivi_application = wl_registry_bind(registry, id,&ivi_application_interface, 1);
 	}
 }
 
@@ -549,17 +551,16 @@ static int wayland_roundtrip(struct wl_display *display)
 
 void _glvOpenNativeDisplay(GLVDISPLAY_t *glv_dpy)
 {
-	   //struct wl_registry *registry;
-
 	   glv_dpy->native_dpy = wl_display_connect(NULL);
 	   glv_dpy->wl_dpy.display = glv_dpy->native_dpy;
 
 	   if (!glv_dpy->native_dpy){
-	      printf("failed to initialize native display\n");
+	      fprintf(stderr,"failed to initialize native display\n");
 	   }
-	   glv_dpy->wl_dpy.compositor = 0;
-	   glv_dpy->wl_dpy.xdg_shell  = 0;
-	   glv_dpy->wl_dpy.wl_shell   = 0;
+	   glv_dpy->wl_dpy.compositor		= 0;
+	   glv_dpy->wl_dpy.xdg_shell		= 0;
+	   glv_dpy->wl_dpy.wl_shell			= 0;
+	   glv_dpy->wl_dpy.ivi_application	= 0;
 
 	   glv_dpy->wl_dpy.registry = wl_display_get_registry(glv_dpy->native_dpy);
 	   wl_registry_add_listener(glv_dpy->wl_dpy.registry, &registry_listener, &glv_dpy->wl_dpy);
@@ -584,6 +585,7 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 	struct zxdg_surface_v6	*xdg_surface;
 	struct zxdg_toplevel_v6	*xdg_toplevel;
 	struct wl_shell_surface	*wl_shell_surface;
+	struct ivi_surface		*ivi_surface;
 
 	struct wl_egl_window	*native;
 	struct wl_region		*region;
@@ -600,6 +602,7 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 	xdg_surface  = 0;
 	xdg_toplevel = 0;
 	wl_shell_surface = 0;
+	ivi_surface = 0;
 
 	wl_dpy = &glv_dpy->wl_dpy;
 
@@ -626,6 +629,9 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 			xdg_toplevel = zxdg_surface_v6_get_toplevel(xdg_surface);
 			zxdg_toplevel_v6_add_listener(xdg_toplevel,&xdg_toplevel_listener, &glv_window->wl_window);
 			zxdg_toplevel_v6_set_title(xdg_toplevel, title);
+		}else if(wl_dpy->ivi_application){
+			uint32_t id_ivisurf = 0x1302;
+			ivi_surface = ivi_application_surface_create(wl_dpy->ivi_application, id_ivisurf, surface);
 		}else{
 			wl_shell_surface = wl_shell_get_shell_surface(wl_dpy->wl_shell,surface);
 			wl_shell_surface_set_toplevel(wl_shell_surface);
@@ -644,6 +650,11 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 
 		native = wl_egl_window_create(surface, width, height);
 
+#if 1 // サブサーフェイスへのイベント通知を無効
+		region = wl_compositor_create_region(wl_dpy->compositor);
+		wl_surface_set_input_region(surface, region);
+		wl_region_destroy(region);
+#endif
 		wl_subsurface_set_position(subsurface, x, y);
 		// --------------------------------------------------------------------------------------
 	}
@@ -659,9 +670,10 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 	glv_window->wl_window.y             = y;
 	glv_window->wl_window.width         = width;
 	glv_window->wl_window.height        = height;
-	glv_window->wl_window.xdg_surface  = xdg_surface;
-	glv_window->wl_window.xdg_toplevel = xdg_toplevel;
+	glv_window->wl_window.xdg_surface	= xdg_surface;
+	glv_window->wl_window.xdg_toplevel	= xdg_toplevel;
 	glv_window->wl_window.wl_shell_surface = wl_shell_surface;
+	glv_window->wl_window.ivi_surface	= ivi_surface;
 
    return((GLVWindow)glv_window);
 }
@@ -678,6 +690,8 @@ void _glvDestroyNativeWindow(GLVWindow glv_win)
 		zxdg_surface_v6_destroy(glv_window->wl_window.xdg_surface);
 	if (glv_window->wl_window.wl_shell_surface)
 		wl_shell_surface_destroy(glv_window->wl_window.wl_shell_surface);
+	if (glv_window->wl_window.ivi_surface)
+		ivi_surface_destroy(glv_window->wl_window.ivi_surface);
 
 	wl_surface_destroy(glv_window->wl_window.surface);
 

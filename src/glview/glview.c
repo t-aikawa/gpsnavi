@@ -25,13 +25,14 @@
 #include "glview.h"
 #include "glview_local.h"
 
-#define GLV_NAME_TEXT		"glview - version 0.0.8"
+#define GLV_NAME_TEXT		"glview:version 0.0.8"
 
 #define GLV_ON_RESHAPE	(1)
 #define GLV_ON_REDRAW	(2)
 #define GLV_ON_UPDATE	(3)
 #define GLV_ON_TIMER	(4)
 #define GLV_ON_GESTURE	(5)
+#define GLV_ON_ACTIVATE	(6)
 
 GLVContext _glv_parent_context=0;
 
@@ -65,7 +66,7 @@ GLVDisplay glvOpenDisplay(char *dpyName)
 	  EGL_NONE
 	};
 
-	printf("%s\n",GLV_NAME_TEXT);
+	fprintf(stdout,"%s\n",GLV_NAME_TEXT);
 
 	glv_dpy =(GLVDISPLAY_t *)malloc(sizeof(GLVDISPLAY_t));
 	if(!glv_dpy){
@@ -90,10 +91,10 @@ GLVDisplay glvOpenDisplay(char *dpyName)
 		return(0);
 	}
 
-	printf("EGL_VERSION    = %s\n", eglQueryString(egl_dpy, EGL_VERSION));
-	printf("EGL_VENDOR     = %s\n", eglQueryString(egl_dpy, EGL_VENDOR));
-	//printf("EGL_EXTENSIONS = %s\n", eglQueryString(egl_dpy, EGL_EXTENSIONS));
-	printf("EGL_CLIENT_APIS= %s\n", eglQueryString(egl_dpy, EGL_CLIENT_APIS));
+	fprintf(stdout,"EGL_VERSION    = %s\n", eglQueryString(egl_dpy, EGL_VERSION));
+	fprintf(stdout,"EGL_VENDOR     = %s\n", eglQueryString(egl_dpy, EGL_VENDOR));
+	//fprintf(stdout,"EGL_EXTENSIONS = %s\n", eglQueryString(egl_dpy, EGL_EXTENSIONS));
+	fprintf(stdout,"EGL_CLIENT_APIS= %s\n", eglQueryString(egl_dpy, EGL_CLIENT_APIS));
 
 	if (!eglChooseConfig(egl_dpy,attribs,&glv_dpy->config,1,&num_configs)) {
 		eglTerminate(egl_dpy);
@@ -194,67 +195,68 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 #endif
 		switch(rmsg.data[0]){
 		case GLV_ON_RESHAPE:
-			GLV_DEBUG printf("GLV_ON_RESHAPE(%d,%d)\n",(int)rmsg.data[2],(int)rmsg.data[3]);
+			GLV_DEBUG fprintf(stdout,"GLV_ON_RESHAPE(%d,%d)\n",(int)rmsg.data[2],(int)rmsg.data[3]);
 			/* 描画サイズ変更 */
 			if(glv_context->eventFunc.reshape != NULL){
 				int rc;
 				rc = (glv_context->eventFunc.reshape)(glv_context,glv_context->maps,rmsg.data[2],rmsg.data[3]);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.reshape error\n");
+					fprintf(stderr,"glv_context->eventFunc.reshape error\n");
 				}
 			}
 			break;
 		case GLV_ON_REDRAW:
 			drawCount++;
-			GLV_DEBUG printf("GLV_ON_REDRAW   count = %d\n",drawCount);
+			GLV_DEBUG fprintf(stdout,"GLV_ON_REDRAW   count = %d\n",drawCount);
 			/* 描画 */
 			if(glv_context->eventFunc.redraw != NULL){
 				int rc;
 				rc = (glv_context->eventFunc.redraw)(glv_context,glv_context->maps);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.redraw error\n");
+					fprintf(stderr,"glv_context->eventFunc.redraw error\n");
 				}
 			}
 			eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
 			break;
 		case GLV_ON_UPDATE:
-			GLV_DEBUG printf("GLV_ON_UPDATE   count = %d\n",drawCount);
+			GLV_DEBUG fprintf(stdout,"GLV_ON_UPDATE   count = %d\n",drawCount);
 			/* 描画 */
 			if(glv_context->eventFunc.update != NULL){
 				int rc;
 				rc = (glv_context->eventFunc.update)(glv_context,glv_context->maps);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.update error\n");
+					fprintf(stderr,"glv_context->eventFunc.update error\n");
 				}
 			}
 			break;
 		case GLV_ON_TIMER:
-			GLV_DEBUG printf("GLV_ON_TIMER\n");
+			GLV_DEBUG fprintf(stdout,"GLV_ON_TIMER\n");
 			if(glvCheckTimer(glv_context,rmsg.data[3],rmsg.data[4]) == GLV_OK){
-				//printf("GLV_ON_TIMER id = %d OK\n",rmsg.data[3]);
+				//fprintf(stdout,"GLV_ON_TIMER id = %d OK\n",rmsg.data[3]);
 				if(glv_context->eventFunc.timer != NULL){
 					int rc;
 					rc = (glv_context->eventFunc.timer)(glv_context,glv_context->maps,rmsg.data[2],rmsg.data[3]);
-#if 1
 					if(rc != GLV_OK){
-						printf("glv_context->eventFunc.timer error\n");
+						fprintf(stderr,"glv_context->eventFunc.timer error\n");
 					}
-#endif
 				}
 			}else{
-				//printf("GLV_ON_TIMER id = %d IGNORE\n",rmsg.data[3]);
+				//fprintf(stderr,"GLV_ON_TIMER id = %d IGNORE\n",rmsg.data[3]);
 			}
 			break;
 		case GLV_ON_GESTURE:
-			GLV_DEBUG printf("GLV_ON_GESTURE\n");
+			GLV_DEBUG fprintf(stdout,"GLV_ON_GESTURE\n");
 			if(glv_context->eventFunc.gesture != NULL){
 				int rc;
 				rc = (glv_context->eventFunc.gesture)(glv_context,glv_context->maps,
 						rmsg.data[2],rmsg.data[3],rmsg.data[4],rmsg.data[5],rmsg.data[6],rmsg.data[7],rmsg.data[8]);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.gesture error\n");
+					fprintf(stderr,"glv_context->eventFunc.gesture error\n");
 				}
 			}
+			break;
+		case GLV_ON_ACTIVATE:
+			GLV_DEBUG fprintf(stdout,"GLV_ON_ACTIVATE\n");
 			break;
 		default:
 			break;
@@ -296,7 +298,7 @@ void *glvSurfaceViewProc(void *param)
 
 	egl_ctx = eglCreateContext(egl_dpy, config, EGL_NO_CONTEXT, NULL );
 	if (!egl_ctx) {
-	  printf("glvSurfaceViewProc:Error: eglCreateContext failed\n");
+	  fprintf(stderr,"glvSurfaceViewProc:Error: eglCreateContext failed\n");
 	  exit(-1);
 	}
 #else
@@ -319,7 +321,7 @@ void *glvSurfaceViewProc(void *param)
 	ctxattr[1] = api;
 	egl_ctx = eglCreateContext ( egl_dpy, config, EGL_NO_CONTEXT, ctxattr );
 	if(egl_ctx == EGL_NO_CONTEXT ) {
-	   printf("glvSurfaceViewProc:Unable to create EGL context (eglError: %d)\n", eglGetError());
+	   fprintf(stderr,"glvSurfaceViewProc:Unable to create EGL context (eglError: %d)\n", eglGetError());
 	   exit(-1);
 	}
 #endif
@@ -328,20 +330,20 @@ void *glvSurfaceViewProc(void *param)
 	egl_surf = eglCreateWindowSurface(egl_dpy, config, win, NULL);
 
    if (!egl_surf) {
-      printf("glvSurfaceViewProc:Error: eglCreateWindowSurface failed\n");
+      fprintf(stderr,"glvSurfaceViewProc:Error: eglCreateWindowSurface failed\n");
       exit(-1);
    }
    glv_context->egl_surf = egl_surf;
 
    if (!eglMakeCurrent(egl_dpy, egl_surf, egl_surf, egl_ctx)) {
-      printf("glvSurfaceViewProc:Error: eglMakeCurrent() failed\n");
+      fprintf(stderr,"glvSurfaceViewProc:Error: eglMakeCurrent() failed\n");
       exit(-1);
    }
    if(instanceCount == 0){
-		printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-		printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
-		//printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-		//printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
+		fprintf(stdout,"GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
+		fprintf(stdout,"GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
+		//fprintf(stdout,"GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
+		//fprintf(stdout,"GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
    }
    instanceCount++;
 
@@ -355,7 +357,7 @@ void *glvSurfaceViewProc(void *param)
 	   int rc;
 	   rc = (glv_context->eventFunc.init)(glv_context,glv_context->maps);
 	   if(rc != GLV_OK){
-		   printf("glv_context->eventFunc.init error\n");
+		   fprintf(stderr,"glv_context->eventFunc.init error\n");
 	   }
    }
 
@@ -395,7 +397,7 @@ GLVContext glvCreateSurfaceView(GLVWindow glv_win,int maps,GLVEVENTFUNC_t *event
 
 	// メッセージキュー生成
 	if (0 != pthread_msq_create(&glv_context->queue, 50)) {
-		printf("glvSurfaceViewProc:Error: pthread_msq_create() failed\n");
+		fprintf(stderr,"glvSurfaceViewProc:Error: pthread_msq_create() failed\n");
 		exit(-1);
 	}
 	// スレッド生成
@@ -442,7 +444,7 @@ int glvOnReDraw(GLVContext glv_c)
 	smsg.data[1] = glv_context->maps;
 	smsg.data[2] = 0;
 	smsg.data[3] = 0;
-	//GLV_DEBUG printf("glvOnReDraw \n");
+	//GLV_DEBUG fprintf(stdout,"glvOnReDraw \n");
 	pthread_msq_msg_send(&glv_context->queue,&smsg,0);
 	return (GLV_OK);
 }
@@ -458,7 +460,7 @@ int glvOnUpdate(GLVContext glv_c)
 	smsg.data[1] = glv_context->maps;
 	smsg.data[2] = 0;
 	smsg.data[3] = 0;
-	//GLV_DEBUG printf("glvOnUpdate \n");
+	//GLV_DEBUG fprintf(stdout,"glvOnUpdate \n");
 	pthread_msq_msg_send(&glv_context->queue,&smsg,0);
 	return (GLV_OK);
 }
@@ -479,11 +481,26 @@ int glvOnGesture(GLVContext glv_c,int eventType,int x,int y,int distance_x,int d
 	smsg.data[6] = distance_y;
 	smsg.data[7] = velocity_x;
 	smsg.data[8] = velocity_y;
-	//GLV_DEBUG printf("glvOnGesture \n");
+	//GLV_DEBUG fprintf(stdout,"glvOnGesture \n");
 	pthread_msq_msg_send(&glv_context->queue,&smsg,0);
 	return (GLV_OK);
 }
 
+int glvOnActivate(GLVContext glv_c)
+{
+	GLVCONTEXT_t *glv_context;
+	pthread_msq_msg_t smsg;
+
+	glv_context = (GLVCONTEXT_t*)glv_c;
+
+	smsg.data[0] = GLV_ON_ACTIVATE;
+	smsg.data[1] = glv_context->maps;
+	smsg.data[2] = 0;
+	smsg.data[3] = 0;
+	//GLV_DEBUG fprintf(stdout,("GLV_ON_ACTIVE \n");
+	pthread_msq_msg_send(&glv_context->queue,&smsg,0);
+	return (GLV_OK);
+}
 
 int glvCheckTimer(GLVContext glv_c,int id,int count)
 {

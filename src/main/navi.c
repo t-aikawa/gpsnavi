@@ -18,7 +18,7 @@
 /*
  * 	1st demo version 2015.11.17	Ver. 0.0.6
  * 	2nd oss  version 2016.06.12	Ver. 0.0.7
- * 	3rd oss  version 2017.12.09	Ver. 0.0.9
+ * 	3rd oss  version 2017.12.10	Ver. 0.0.10
  */
 
 #include <math.h>
@@ -33,7 +33,7 @@
 #include "navi.h"
 #include "HMI_Icon.h"
 
-#define APP_VERSION_TEXT	"Version 0.0.9 (" __DATE__ ")"
+#define APP_VERSION_TEXT	"Version 0.0.10 (" __DATE__ ")"
 #define APP_TITLE_TEXT		"GPS Navigation"
 #define APP_NAME_TEXT		APP_TITLE_TEXT " " APP_VERSION_TEXT
 
@@ -125,12 +125,12 @@ void naviStartUpRegion(int region)
 	strcat(navi_config_map_udi_info_file	,navi_config_path); strcat(navi_config_map_udi_info_file	,"Data/MD/UDI/udi_info");
 	strcat(navi_config_map_font_file		,navi_config_path); strcat(navi_config_map_font_file		,"IPAfont00303/ipagp.ttf");
 
-	printf("navi_config_path             (%s)\n",navi_config_path);
-	printf("navi_config_map_db_path      (%s)\n",navi_config_map_db_path);
-	printf("navi_config_user_data_path   (%s)\n",navi_config_user_data_path);
-	printf("navi_config_map_udi_data_path(%s)\n",navi_config_map_udi_data_path);
-	printf("navi_config_map_udi_info_file(%s)\n",navi_config_map_udi_info_file);
-	printf("navi_config_map_font_file    (%s)\n",navi_config_map_font_file);
+	fprintf(stdout,"navi_config_path             (%s)\n",navi_config_path);
+	fprintf(stdout,"navi_config_map_db_path      (%s)\n",navi_config_map_db_path);
+	fprintf(stdout,"navi_config_user_data_path   (%s)\n",navi_config_user_data_path);
+	fprintf(stdout,"navi_config_map_udi_data_path(%s)\n",navi_config_map_udi_data_path);
+	fprintf(stdout,"navi_config_map_udi_info_file(%s)\n",navi_config_map_udi_info_file);
+	fprintf(stdout,"navi_config_map_font_file    (%s)\n",navi_config_map_font_file);
 	/* ---------------------------------------------------------------------------------- */
 }
 
@@ -153,7 +153,7 @@ void naviStartUpResolution(int resolution)
 	default:
 		break;
 	}
-	printf("window size %dx%d\n",WinWidth,WinHeight);
+	//printf("window size %dx%d\n",WinWidth,WinHeight);
 	/* ---------------------------------------------------------------------------------- */
 }
 
@@ -260,7 +260,7 @@ int hmi_init(GLVContext glv_ctx,int maps)
     hmiMP_GL_Init();
 
     if(sample_hmi_load_image_file == 1){
-    	printf("load image file(%s).\n",navi_config_hmi_udi_data_path);
+    	//printf("load image file(%s).\n",navi_config_hmi_udi_data_path);
     	//	HMIで使用するイメージはイメージファイルを読み込んで使用する
     	hmiMP_ICON_Load(navi_config_hmi_udi_data_path, navi_config_hmi_udi_info_file);
     }else{
@@ -361,20 +361,20 @@ int map_gesture(GLVContext glv_ctx,int maps,int eventType,int x,int y,int distan
 	switch(eventType)
 	 {
 	   case    GLV_GESTURE_EVENT_DOWN:
-		   printf("GESTURE:[down(%d,%d)]\n",x,y);
+		   //printf("GESTURE:[down(%d,%d)]\n",x,y);
 		   glvStartTimer(glv_ctx,GESTURE_LONG_PRESS_TIMER_ID);
 		   map_long_press_x = x;
 		   map_long_press_y = y;
 		   break;
 	   case    GLV_GESTURE_EVENT_SINGLE_UP:
-		   printf("GESTURE:[single up(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[single up(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   break;
 	   case    GLV_GESTURE_EVENT_SCROLL:
-		   printf("GESTURE:[scroll(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[scroll(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   run_scroll(glv_ctx,distanceX,distanceY);
 		   break;
 	   case    GLV_GESTURE_EVENT_FLING:
-		   printf("GESTURE:[flick(%d,%d) vector:%d %d velocity:%d %d]\n",x,y,distanceX,distanceY,velocityX,velocityY);
+		   //printf("GESTURE:[flick(%d,%d) vector:%d %d velocity:%d %d]\n",x,y,distanceX,distanceY,velocityX,velocityY);
 		   {
 				mMoveDistance = 0;
 				mBaseDistance = hypot((double)velocityX, (double)velocityY) * GOLE_RATIO;
@@ -393,7 +393,7 @@ int map_gesture(GLVContext glv_ctx,int maps,int eventType,int x,int y,int distan
 		   glvStartTimer(glv_ctx,GESTURE_FLICK_TIMER_ID);
 		   break;
 	   case    GLV_GESTURE_EVENT_SCROLL_STOP:
-		   printf("GESTURE:[scroll end(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[scroll end(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   run_scroll(glv_ctx,distanceX,distanceY);
 		   break;
 	   default:
@@ -412,9 +412,9 @@ int map_timer(GLVContext glv_ctx,int maps,int group,int id)
 			/* シミュレーション中 */
 			return(GLV_OK);
 		}
-		printf("TIMER:long press\n");
+		//printf("TIMER:long press\n");
 		NC_MP_ScreenToGeoCode(NC_MP_MAP_MAIN,map_long_press_x, map_long_press_y, &geoCood);
-		printf("TIMER:latitude(%ld) , longitude(%ld)\n",geoCood.latitude,geoCood.longitude);
+		//printf("TIMER:latitude(%ld) , longitude(%ld)\n",geoCood.latitude,geoCood.longitude);
 		sample_set_demo_icon_pin_flag(&geoCood);
 		NC_MP_RefreshMap(NC_MP_MAP_MAIN);
 		glvSwapBuffers(glv_ctx);
@@ -424,15 +424,15 @@ int map_timer(GLVContext glv_ctx,int maps,int group,int id)
 
 static void usage(void)
 {
-	printf("Usage:\n");
-//	printf("  --map  [ uk | nevada ]      set the map region\n");
-//	printf("           ~~                 default\n");
-	printf("  --r    [ fhd | hd | agl ]   set the resolution\n");
-	printf("                      ~~~     default\n");
-	printf("  --width  WIDTH              width  of wayland surface\n");
-	printf("  --height HEIGHT             height of wayland surface\n");
-	printf("  --data   data_path          set the map data path\n");
-	printf("  --help                      this help message\n");
+	fprintf(stdout,"Usage:\n");
+//	fprintf(stdout,"  --map  [ uk | nevada ]      set the map region\n");
+//	fprintf(stdout,"           ~~                 default\n");
+	fprintf(stdout,"  --r    [ fhd | hd | agl ]   set the resolution\n");
+	fprintf(stdout,"                      ~~~     default\n");
+	fprintf(stdout,"  --width  WIDTH              width  of wayland surface\n");
+	fprintf(stdout,"  --height HEIGHT             height of wayland surface\n");
+	fprintf(stdout,"  --data   data_path          set the map data path\n");
+	fprintf(stdout,"  --help                      this help message\n");
 }
 
 int main_arg(int argc, char *argv[])
@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
 		return(-1);
 	}
 
-	printf("%s\n",APP_NAME_TEXT);
+	fprintf(stdout,"%s\n",APP_NAME_TEXT);
 
 	naviStartUpResolution(resolution);
 	naviStartUpRegion(region);
@@ -551,7 +551,7 @@ int main(int argc, char *argv[])
 
 	glv_dpy = glvOpenDisplay(dpyName);
 	if(!glv_dpy){
-		printf("Error: glvOpenDisplay() failed\n");
+		fprintf(stderr,"Error: glvOpenDisplay() failed\n");
 		return(-1);
 	}
 	/* ----------------------------------------------------------------------------------------------- */
@@ -631,7 +631,7 @@ int sample_hmi_keyboard_handle_key(
 	if(glv_map_context == 0){
 		return(0);
 	}
-    fprintf(stderr, "Key is %d state is %d\n", key, state);
+    //fprintf(stderr, "Key is %d state is %d\n", key, state);
     if(state == GLV_KEYBOARD_KEY_STATE_PRESSED){
     	switch(key){
     	case 103:		// '↑'

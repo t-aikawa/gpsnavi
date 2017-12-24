@@ -39,7 +39,7 @@ static pthread_mutex_t pthread_current_guide_info_mutex = PTHREAD_MUTEX_INITIALI
 #define GUIDE_ON_GUIDE_END		(3)
 
 #define GUIDE_TIMER_ID			(1)
-#define GUIDE_REPEAT_TIME		(300)
+#define GUIDE_REPEAT_TIME		(600)
 
 int sample_get_guide_info(SMREALTIMEGUIDEDATA	*guide_info)
 {
@@ -97,7 +97,7 @@ static void *guideThread(void *no_arg)
 					pthreadStopTimer(guide_threadId,GUIDE_TIMER_ID);
 					break;
 				}
-				printf("NC_DM_GetCarMoveStatus = %d\n",NC_DM_GetCarMoveStatus());
+				//printf("NC_DM_GetCarMoveStatus = %d\n",NC_DM_GetCarMoveStatus());
 #if 0
 				if(SC_DM_GetCarMoveStatus() == 2){
 					/* 到着 */
@@ -125,6 +125,7 @@ static void *guideThread(void *no_arg)
 				}else{
 					current_guide_info_status = 0;	// 誘導情報を無効にする
 				}
+#ifdef ENABLE_GIDE_TEXT
 /* ------------------------------------------------------------------------------------------------- */
 {
 	char *guideText[]={
@@ -160,6 +161,7 @@ static void *guideThread(void *no_arg)
 		printf("%s\n",guideText[guide_info.turnDir]);
 	}
 }
+#endif //#ifdef ENABLE_GIDE_TEXT
 /* ------------------------------------------------------------------------------------------------- */
 #if 0
 			// set value
@@ -216,14 +218,14 @@ void sample_createGuideThread(void)
 
 	// メッセージキュー生成
 	if (0 != pthread_msq_create(&guide_queue, 50)) {
-		printf("createGuideThread:Error: pthread_msq_create() failed\n");
+		fprintf(stderr,"createGuideThread:Error: pthread_msq_create() failed\n");
 		exit(-1);
 	}
 	// スレッド生成
 	pret = pthread_create(&guide_threadId, NULL, guideThread, NULL);
 
 	if (0 != pret) {
-		printf("createGuideThread:Error: pthread_create() failed\n");
+		fprintf(stderr,"createGuideThread:Error: pthread_create() failed\n");
 	}
 }
 
