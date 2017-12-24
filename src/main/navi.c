@@ -16,8 +16,9 @@
  */
 
 /*
- * 		1st demo version 2015.11.17		Ver. 0.0.6
- * 		2nd oss  version 2016.06.12		Ver. 0.0.7
+ * 	1st demo version 2015.11.17	Ver. 0.0.6
+ * 	2nd oss  version 2016.06.12	Ver. 0.0.7
+ * 	3rd oss  version 2017.12.09	Ver. 0.0.9
  */
 
 #include <math.h>
@@ -32,7 +33,9 @@
 #include "navi.h"
 #include "HMI_Icon.h"
 
-#define APP_NAME_TEXT		"navi - sample GPS Navigation Version 0.0.7 (build 031 " __DATE__ ")"
+#define APP_VERSION_TEXT	"Version 0.0.9 (" __DATE__ ")"
+#define APP_TITLE_TEXT		"GPS Navigation"
+#define APP_NAME_TEXT		APP_TITLE_TEXT " " APP_VERSION_TEXT
 
 static 	char *dpyName = NULL;
 GLVContext glv_map_context = 0;
@@ -572,8 +575,8 @@ int main(int argc, char *argv[])
 	glv_input_func.touch_down   = sample_hmi_button_down;
 	glv_input_func.touch_up     = sample_hmi_button_up;
 
-	glv_map_window = glvCreateNativeWindow(glv_dpy, 0, 0, WinWidth, WinHeight,NULL);
-	glv_hmi_window = glvCreateNativeWindow(glv_dpy, 0, 0, WinWidth, WinHeight,glv_map_window);
+	glv_map_window = glvCreateNativeWindow(glv_dpy,APP_TITLE_TEXT, 0, 0, WinWidth, WinHeight,NULL);
+	glv_hmi_window = glvCreateNativeWindow(glv_dpy,"", 0, 0, WinWidth, WinHeight,glv_map_window);
 
 	glvInitTimer();
 

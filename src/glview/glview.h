@@ -92,7 +92,7 @@ EGLDisplay	glvGetEGLDisplay(GLVDisplay glv_dpy);
 EGLConfig	glvGetEGLConfig(GLVDisplay glv_dpy);
 EGLint		glvGetEGLVisualid(GLVDisplay glv_dpy);
 
-GLVWindow glvCreateNativeWindow(GLVDisplay glv_dpy,int x, int y, int width, int height,GLVWindow glv_win_parent);
+GLVWindow glvCreateNativeWindow(GLVDisplay glv_dpy,char *title,int x, int y, int width, int height,GLVWindow glv_win_parent);
 
 void glvDestroyNativeWindow(GLVWindow glv_win);
 

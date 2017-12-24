@@ -31,6 +31,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include "xdg-shell-unstable-v6-client-protocol.h"
+
 #include "glview.h"
 #include "glview_local.h"
 
@@ -58,7 +60,7 @@ struct touch_event_data
 static void mouse_event(GLVMOUSEEVENT_t *glv_mouse_enent);
 
 GLVINPUTFUNC_t	glv_input_func = {};
-
+static int running = 1;
 // ------------------------------------------------------------------------------------
 // keyboard
 
@@ -190,7 +192,13 @@ pointer_handle_button(void *data, struct wl_pointer *wl_pointer,
     }
 #if 1
     if (button == BTN_RIGHT && state == WL_POINTER_BUTTON_STATE_PRESSED){
-    	wl_shell_surface_move(((GLVCONTEXT_t *)_glv_parent_context)->glv_win->wl_window.shell_surface,seat, serial);
+		WLWINDOW_t *w;
+		w = &((GLVCONTEXT_t *)_glv_parent_context)->glv_win->wl_window;
+		if(w->xdg_toplevel){
+			zxdg_toplevel_v6_move(w->xdg_toplevel,seat, serial);
+		}else{
+			wl_shell_surface_move(w->wl_shell_surface,seat, serial);
+		}
     }
 #endif
 }
@@ -378,6 +386,36 @@ handle_ping(void *data, struct wl_shell_surface *shell_surface,
 	fprintf(stderr, "Pinged and ponged\n");
 }
 
+// ------------------------------------------------------------------------------------
+static void
+handle_surface_configure(void *data, struct zxdg_surface_v6 *surface,
+			 uint32_t serial)
+{
+	zxdg_surface_v6_ack_configure(surface, serial);
+}
+
+static const struct zxdg_surface_v6_listener xdg_surface_listener = {
+	handle_surface_configure
+};
+
+static void
+handle_toplevel_configure(void *data, struct zxdg_toplevel_v6 *toplevel,
+			  int32_t width, int32_t height,
+			  struct wl_array *states)
+{
+}
+
+static void
+handle_toplevel_close(void *data, struct zxdg_toplevel_v6 *xdg_toplevel)
+{
+	running = 0;
+}
+
+static const struct zxdg_toplevel_v6_listener xdg_toplevel_listener = {
+	handle_toplevel_configure,
+	handle_toplevel_close,
+};
+// -----------------------------------------------------------------------
 static void
 handle_configure(void *data, struct wl_shell_surface *shell_surface,
 		 uint32_t edges, int32_t width, int32_t height)
@@ -394,14 +432,24 @@ static const struct wl_shell_surface_listener shell_surface_listener = {
 	handle_configure,
 	handle_popup_done
 };
-// ------------------------------------------------------------------------------------
-#endif /* GLV_WAYLAND_INPUT */
-
 // ----------------------------------------------------------------------------
+#endif /* GLV_WAYLAND_INPUT */
+// ----------------------------------------------------------------------------
+
 void _glvInitNativeDisplay(GLVDISPLAY_t *glv_dpy)
 {
 	   // non
 }
+	
+static void
+xdg_shell_ping(void *data, struct zxdg_shell_v6 *shell, uint32_t serial)
+{
+	zxdg_shell_v6_pong(shell, serial);
+}
+
+static const struct zxdg_shell_v6_listener xdg_shell_listener = {
+	xdg_shell_ping,
+};
 
 static void
 registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
@@ -409,11 +457,18 @@ registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
 {
    WLDISPLAY_t *d = data;
 
-   if (strcmp(interface, "wl_compositor") == 0) {
-      d->compositor = wl_registry_bind(registry, id, &wl_compositor_interface, 1);
-   } else if (strcmp(interface, "wl_shell") == 0) {
-      d->shell = wl_registry_bind(registry, id, &wl_shell_interface, 1);
-   }
+	if (strcmp(interface, "wl_compositor") == 0) {
+		d->compositor = wl_registry_bind(registry, id, &wl_compositor_interface, 1);
+	} else if (strcmp(interface, "zxdg_shell_v6") == 0) {
+		printf("registry:zxdg_shell_v6\n");
+		d->xdg_shell = wl_registry_bind(registry, id,&zxdg_shell_v6_interface, 1);
+		zxdg_shell_v6_add_listener(d->xdg_shell, &xdg_shell_listener, d);
+	} else if (strcmp(interface, "wl_shell") == 0) {
+		printf("registry:wl_shell\n");
+		if(!d->xdg_shell){
+			d->wl_shell = wl_registry_bind(registry, id, &wl_shell_interface, 1);
+		}
+	}
 #ifdef GLV_WAYLAND_INPUT
    else if (strcmp(interface, "wl_seat") == 0) {
 #ifdef GLV_WAYLAND_TOUCH
@@ -428,7 +483,10 @@ registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
 #endif /* GLV_WAYLAND_INPUT */
    else if (strcmp(interface, "wl_subcompositor") == 0) {
    		d->subcompositor = wl_registry_bind(registry, id, &wl_subcompositor_interface, 1);
-   	}
+   	} else if (strcmp(interface, "wl_shm") == 0) {
+	} else if (strcmp(interface, "ivi_application") == 0) {
+		printf("registry:wl_shell\n");
+	}
 }
 
 static void
@@ -491,7 +549,7 @@ static int wayland_roundtrip(struct wl_display *display)
 
 void _glvOpenNativeDisplay(GLVDISPLAY_t *glv_dpy)
 {
-	   struct wl_registry *registry;
+	   //struct wl_registry *registry;
 
 	   glv_dpy->native_dpy = wl_display_connect(NULL);
 	   glv_dpy->wl_dpy.display = glv_dpy->native_dpy;
@@ -500,28 +558,32 @@ void _glvOpenNativeDisplay(GLVDISPLAY_t *glv_dpy)
 	      printf("failed to initialize native display\n");
 	   }
 	   glv_dpy->wl_dpy.compositor = 0;
-	   glv_dpy->wl_dpy.shell = 0;
+	   glv_dpy->wl_dpy.xdg_shell  = 0;
+	   glv_dpy->wl_dpy.wl_shell   = 0;
 
-	   registry = wl_display_get_registry(glv_dpy->native_dpy);
-	   wl_registry_add_listener(registry, &registry_listener, &glv_dpy->wl_dpy);
+	   glv_dpy->wl_dpy.registry = wl_display_get_registry(glv_dpy->native_dpy);
+	   wl_registry_add_listener(glv_dpy->wl_dpy.registry, &registry_listener, &glv_dpy->wl_dpy);
 	   wayland_roundtrip(glv_dpy->native_dpy);
-	   wl_registry_destroy(registry);
 }
 
 void _glvCloseNativeDisplay(GLVDISPLAY_t *glv_dpy)
 {
+	   wl_registry_destroy(glv_dpy->wl_dpy.registry);
 	   wl_display_flush(glv_dpy->native_dpy);
 	   wl_display_disconnect(glv_dpy->native_dpy);
 }
 
 GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
+			char *title,
               int x, int y, int width, int height,
 			  GLVWindow glv_window_parent)
 {
 	struct wl_surface		*parent;
 	struct wl_surface		*surface;
 	struct wl_subsurface	*subsurface;
-	struct wl_shell_surface	*shell_surface;
+	struct zxdg_surface_v6	*xdg_surface;
+	struct zxdg_toplevel_v6	*xdg_toplevel;
+	struct wl_shell_surface	*wl_shell_surface;
 
 	struct wl_egl_window	*native;
 	struct wl_region		*region;
@@ -534,32 +596,46 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 		parent = 0;
 	}
 	subsurface    = 0;
-	shell_surface = 0;
+
+	xdg_surface  = 0;
+	xdg_toplevel = 0;
+	wl_shell_surface = 0;
 
 	wl_dpy = &glv_dpy->wl_dpy;
+
+	glv_window = (GLVWINDOW_t *)malloc(sizeof(GLVWINDOW_t));
+	if(!glv_window){
+		return(0);
+	}
 
 	surface = wl_compositor_create_surface(wl_dpy->compositor);
 
 	if(parent == 0){
-		// -----------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------
 		/* map */
 		region = wl_compositor_create_region(wl_dpy->compositor);
 		wl_region_add(region, 0, 0, width, height);
 		wl_surface_set_opaque_region(surface, region);
 		wl_region_destroy(region);
 
-		shell_surface = wl_shell_get_shell_surface(wl_dpy->shell,surface);
-
 		native = wl_egl_window_create(surface, width, height);
 
-		wl_shell_surface_set_toplevel(shell_surface);
-
+		if(wl_dpy->xdg_shell){
+			xdg_surface = zxdg_shell_v6_get_xdg_surface(wl_dpy->xdg_shell,surface);
+			zxdg_surface_v6_add_listener(xdg_surface,&xdg_surface_listener, &glv_window->wl_window);
+			xdg_toplevel = zxdg_surface_v6_get_toplevel(xdg_surface);
+			zxdg_toplevel_v6_add_listener(xdg_toplevel,&xdg_toplevel_listener, &glv_window->wl_window);
+			zxdg_toplevel_v6_set_title(xdg_toplevel, title);
+		}else{
+			wl_shell_surface = wl_shell_get_shell_surface(wl_dpy->wl_shell,surface);
+			wl_shell_surface_set_toplevel(wl_shell_surface);
 #ifdef GLV_WAYLAND_INPUT
-		wl_shell_surface_add_listener(shell_surface,&shell_surface_listener, NULL);
+			wl_shell_surface_add_listener(wl_shell_surface,&shell_surface_listener, NULL);
 #endif /* GLV_WAYLAND_INPUT */
-		// -----------------------------------------------------------------------------------------------------------------
+		}
+		// --------------------------------------------------------------------------------------
 	}else{
-		// -----------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------
 		/* hmi */
 		wl_surface_add_listener(surface,&surface_listener, NULL);
 
@@ -569,26 +645,23 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 		native = wl_egl_window_create(surface, width, height);
 
 		wl_subsurface_set_position(subsurface, x, y);
-		// -----------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------
 	}
-	//*winRet = native;
-
-	glv_window = (GLVWINDOW_t *)malloc(sizeof(GLVWINDOW_t));
-	if(!glv_window){
-		return(0);
-	}
+	wl_surface_commit(surface);
 
 	glv_window->glv_dpy                 = glv_dpy;
 	glv_window->egl_window              = native;
 	glv_window->wl_window.parent        = parent;
 	glv_window->wl_window.surface       = surface;
 	glv_window->wl_window.subsurface    = subsurface;
-	glv_window->wl_window.shell_surface = shell_surface;
 	glv_window->wl_window.callback      = 0;
 	glv_window->wl_window.x             = x;
 	glv_window->wl_window.y             = y;
 	glv_window->wl_window.width         = width;
 	glv_window->wl_window.height        = height;
+	glv_window->wl_window.xdg_surface  = xdg_surface;
+	glv_window->wl_window.xdg_toplevel = xdg_toplevel;
+	glv_window->wl_window.wl_shell_surface = wl_shell_surface;
 
    return((GLVWindow)glv_window);
 }
@@ -599,8 +672,12 @@ void _glvDestroyNativeWindow(GLVWindow glv_win)
 
 	wl_egl_window_destroy(glv_window->egl_window);
 
-	if (glv_window->wl_window.shell_surface)
-		wl_shell_surface_destroy(glv_window->wl_window.shell_surface);
+	if (glv_window->wl_window.xdg_toplevel)
+		zxdg_toplevel_v6_destroy(glv_window->wl_window.xdg_toplevel);
+	if (glv_window->wl_window.xdg_surface)
+		zxdg_surface_v6_destroy(glv_window->wl_window.xdg_surface);
+	if (glv_window->wl_window.wl_shell_surface)
+		wl_shell_surface_destroy(glv_window->wl_window.wl_shell_surface);
 
 	wl_surface_destroy(glv_window->wl_window.surface);
 
@@ -649,7 +726,7 @@ void glvEventLoop(GLVDisplay glv_dpy)
 	pollfd.events = POLLIN;
 	pollfd.revents = 0;
 
-	while(1){
+	while(running){
 	  int redraw = 0;
 
       wl_display_dispatch_pending(display);

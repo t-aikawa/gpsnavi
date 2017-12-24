@@ -25,6 +25,8 @@
 #include "glview.h"
 #include "glview_local.h"
 
+#define GLV_NAME_TEXT		"glview - version 0.0.8"
+
 #define GLV_ON_RESHAPE	(1)
 #define GLV_ON_REDRAW	(2)
 #define GLV_ON_UPDATE	(3)
@@ -59,8 +61,11 @@ GLVDisplay glvOpenDisplay(char *dpyName)
 	  EGL_BLUE_SIZE, 1,
 	  EGL_ALPHA_SIZE, 1,		// append 2015.12.10 by T.Aikawa
 	  EGL_DEPTH_SIZE, 1,
+	  EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 	  EGL_NONE
 	};
+
+	printf("%s\n",GLV_NAME_TEXT);
 
 	glv_dpy =(GLVDISPLAY_t *)malloc(sizeof(GLVDISPLAY_t));
 	if(!glv_dpy){
@@ -118,11 +123,12 @@ int glvCloseDisplay(GLVDisplay glv_dpy)
 }
 
 GLVWindow glvCreateNativeWindow(GLVDisplay glv_dpy,
+			char *title,
               int x, int y, int width, int height,
 			  GLVWindow glv_window_parent)
 {
 	GLVWindow glv_window;
-	glv_window = _glvCreateNativeWindow((GLVDISPLAY_t*)glv_dpy, x, y, width, height,glv_window_parent);
+	glv_window = _glvCreateNativeWindow((GLVDISPLAY_t*)glv_dpy,title, x, y, width, height,glv_window_parent);
 	return(glv_window);
 }
 

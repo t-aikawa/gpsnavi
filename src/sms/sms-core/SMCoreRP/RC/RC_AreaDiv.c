@@ -2096,7 +2096,7 @@ E_SC_RESULT 	RC_AreaDiv_Change_ParcelID_Pos(
 	)
 		return (e_SC_RESULT_FAIL);
 
-	if( -1 == MESHC_ChgLatLonToParcelID(
+	if( -1 == SC_Lib_ChangeTitude2PID(
 										base_latitude,		// 変換する緯度（秒）
 										base_longitude,		// 変換する経度（秒）
 										target_level,		// 変換後のレベル

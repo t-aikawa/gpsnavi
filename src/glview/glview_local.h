@@ -24,16 +24,21 @@
 
 typedef struct _wldisplay {
    struct wl_display		*display;
+   struct wl_registry		*registry;
    struct wl_compositor		*compositor;
    struct wl_subcompositor	*subcompositor;
-   struct wl_shell			*shell;
+   struct zxdg_shell_v6		*xdg_shell;
+   struct wl_shell			*wl_shell;
+	// struct ivi_application *ivi_application;
 } WLDISPLAY_t;
 
 typedef struct _wlwindow {
 	struct wl_surface		*parent;
 	struct wl_surface		*surface;
+	struct zxdg_surface_v6	*xdg_surface;
+	struct zxdg_toplevel_v6	*xdg_toplevel;
+	struct wl_shell_surface	*wl_shell_surface;
 	struct wl_subsurface	*subsurface;
-	struct wl_shell_surface	*shell_surface;
 	struct wl_callback		*callback;
 	int x, y;
 	int width, height;
@@ -76,7 +81,7 @@ void _glvInitNativeDisplay(GLVDISPLAY_t *glv_dpy);
 void _glvOpenNativeDisplay(GLVDISPLAY_t *glv_dpy);
 void _glvCloseNativeDisplay(GLVDISPLAY_t *glv_dpy);
 
-GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,int x, int y, int width, int height,GLVWindow glv_win_parent);
+GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,char *title,int x, int y, int width, int height,GLVWindow glv_win_parent);
 void _glvDestroyNativeWindow(GLVWindow glv_win);
 
 #endif /* GLVIEW_LOCAL_H */
