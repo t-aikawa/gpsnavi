@@ -620,7 +620,6 @@ E_SC_RESULT RG_CTL_EN_SetGuideVoice_Waypt(RG_CTL_MAIN_t *guidectl_p) {
 E_SC_RESULT RG_CTL_EN_SetGuideVoice_Dest(RG_CTL_MAIN_t *guidectl_p) {
 	SC_LOG_DebugPrint(SC_TAG_RG, SC_LOG_START);
 
-	//E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	RG_CTL_TRACK_t *new_p;
 
 	if (NULL == guidectl_p) {
@@ -647,7 +646,6 @@ E_SC_RESULT RG_CTL_EN_SetGuideVoice_Dest(RG_CTL_MAIN_t *guidectl_p) {
 E_SC_RESULT RG_CTL_EN_SetGuideVoice_Split(RG_CTL_MAIN_t *guidectl_p) {
 	SC_LOG_DebugPrint(SC_TAG_RG, SC_LOG_START);
 
-	//E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	E_RG_VCESTS vcests = e_RG_VCESTS_INVALID;
 	RG_CTL_TRACK_t *new_p;
 	RG_CTL_TRACK_t *old_p;
@@ -704,13 +702,11 @@ E_SC_RESULT RG_CTL_EN_SetGuideVoice_Split(RG_CTL_MAIN_t *guidectl_p) {
 E_SC_RESULT RG_CTL_EN_SetGuideVoice_Complex(RG_CTL_MAIN_t *guidectl_p) {
 	SC_LOG_DebugPrint(SC_TAG_RG, SC_LOG_START);
 
-	//E_RG_VCESTS vcests = e_RG_VCESTS_INVALID;
 	RG_CTL_TRACK_t *new_p;
 	RG_CTL_TRACK_t *old_p;
 	UINT32 remain_dist;
 
 	RT_VOICE_t turn_list = {};
-	//RT_VOICE_t crsn_list = {};
 
 	if (NULL == guidectl_p) {
 		SC_LOG_ErrorPrint(SC_TAG_RG, "[CTL] ERROR " HERE);

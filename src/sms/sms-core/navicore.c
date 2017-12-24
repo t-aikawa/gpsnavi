@@ -787,7 +787,7 @@ INT32 NC_RP_CancelPlanningRoute() {
 	return (result);
 }
 
-Bool NC_RP_PlanSingleRoute(SMRPPOINT *newPoint, INT32 newPointNum) {
+Bool NC_RP_PlanSingleRoute(SMRPPOINT *newPoint, INT32 newPointNum, INT64 time) {
 	SC_LOG_DebugPrint(SC_TAG_NC, SC_LOG_START);
 
 	Bool bResult = false;
@@ -838,7 +838,7 @@ Bool NC_RP_PlanSingleRoute(SMRPPOINT *newPoint, INT32 newPointNum) {
 		}
 
 		// 経路探索
-		result = SC_MNG_DoRoute(e_ROUTE_SINGLE);
+		result = SC_MNG_DoRoute(e_ROUTE_SINGLE, time);
 		if (e_SC_RESULT_SUCCESS == result) {
 			bResult = true;
 		} else {
@@ -1063,6 +1063,28 @@ Bool NC_Guide_IsGuidePause() {
 	return (status);
 }
 
+/*
+ * @brief 言語を設定する
+ * @param[in]  language  言語
+ * @return 処理結果(1以上：成功　以外:失敗)
+ */
+INT32 NC_DM_SetLanguage(INT32 language) {
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
+	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
+	INT32 result = NC_SUCCESS;
+
+	// 言語設定
+	ret = SC_MNG_SetLanguage(language);
+	if (e_SC_RESULT_SUCCESS != ret) {
+		SC_LOG_ErrorPrint(SC_TAG_CORE, (Char*) "SC_MNG_SetLanguage error(0x%08x), " HERE, ret);
+		result = NC_ERROR;
+	}
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
+	return result;
+}
+
 INT32 NC_Guide_GetRealTimeInfo(SMREALTIMEGUIDEDATA *guide) {
 	INT32 result = NC_SUCCESS;
 
@@ -1086,11 +1108,192 @@ INT32 NC_Guide_GetRealTimeInfo(SMREALTIMEGUIDEDATA *guide) {
 	return (result);
 }
 
+/**
+ * @brief 音声ＴＴＳ情報を取得する
+ */
+INT32 NC_Guide_GetVoiceTTS(char ward1[])
+{
+	INT32			result = NC_SUCCESS;
+	E_SC_RESULT		ret = e_SC_RESULT_SUCCESS;
+	SMVOICETTS		voice = {0};
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
+
+	ward1[0] = 0;
+
+	// 音声ＴＴＳ取得
+	ret = SC_MNG_GetVoiceTTS(&voice);
+	if (e_SC_RESULT_SUCCESS != ret) {
+		SC_LOG_ErrorPrint(SC_TAG_CORE, (Char*)"SC_MNG_GetVoiceTTS error(0x%08x), " HERE, ret);
+		result = NC_ERROR;
+	} else {
+		// クラス定義をロードする
+		//cls = env->GetObjectClass(rtVOICETTS);
+
+		// 設定メソッドのIDを取得する
+		//mid = env->GetMethodID(cls, "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+
+#if 1	// 暫定対応
+		INT32 i = 0;
+		char val[256] = { 0 };
+		char *ward2 = NULL;
+
+		for (i = 0; i < voice.tts.current; i++) {
+			switch(voice.tts.voice_list[i]){
+			case VOICE_TEXT_301:
+				memset(val, 0, sizeof(val));
+				ward2 = NULL;
+				sprintf(ward1, (char*) "%s %d", ward1, voice.tts.valiavbleNum);
+				break;
+			case VOICE_TEXT_302:
+				memset(val, 0, sizeof(val));
+				ward2 = NULL;
+				sprintf(ward1, (char*) "%s %s", ward1, voice.tts.valiavbleName);
+				break;
+			case VOICE_TEXT_303 : ward2 = (char*)&VOICE_TEXT2_303[0]; break;
+			case VOICE_TEXT_304 : ward2 = (char*)&VOICE_TEXT2_304[0]; break;
+			case VOICE_TEXT_305 : ward2 = (char*)&VOICE_TEXT2_305[0]; break;
+			case VOICE_TEXT_306 : ward2 = (char*)&VOICE_TEXT2_306[0]; break;
+
+			case VOICE_TEXT_JP_101 : ward2 = (char*)&VOICE_TEXT2_JP_101[0]; break;
+			case VOICE_TEXT_JP_102 : ward2 = (char*)&VOICE_TEXT2_JP_102[0]; break;
+			case VOICE_TEXT_JP_103 : ward2 = (char*)&VOICE_TEXT2_JP_103[0]; break;
+			case VOICE_TEXT_JP_104 : ward2 = (char*)&VOICE_TEXT2_JP_104[0]; break;
+			case VOICE_TEXT_JP_105 : ward2 = (char*)&VOICE_TEXT2_JP_105[0]; break;
+			case VOICE_TEXT_JP_106 : ward2 = (char*)&VOICE_TEXT2_JP_106[0]; break;
+			case VOICE_TEXT_JP_201 : ward2 = (char*)&VOICE_TEXT2_JP_201[0]; break;
+			case VOICE_TEXT_JP_202 : ward2 = (char*)&VOICE_TEXT2_JP_202[0]; break;
+			case VOICE_TEXT_JP_203 : ward2 = (char*)&VOICE_TEXT2_JP_203[0]; break;
+			case VOICE_TEXT_JP_204 : ward2 = (char*)&VOICE_TEXT2_JP_204[0]; break;
+			case VOICE_TEXT_JP_205 : ward2 = (char*)&VOICE_TEXT2_JP_205[0]; break;
+			case VOICE_TEXT_JP_206 : ward2 = (char*)&VOICE_TEXT2_JP_206[0]; break;
+			case VOICE_TEXT_JP_207 : ward2 = (char*)&VOICE_TEXT2_JP_207[0]; break;
+			case VOICE_TEXT_JP_208 : ward2 = (char*)&VOICE_TEXT2_JP_208[0]; break;
+			case VOICE_TEXT_JP_209 : ward2 = (char*)&VOICE_TEXT2_JP_209[0]; break;
+			case VOICE_TEXT_JP_210 : ward2 = (char*)&VOICE_TEXT2_JP_210[0]; break;
+			case VOICE_TEXT_JP_211 : ward2 = (char*)&VOICE_TEXT2_JP_211[0]; break;
+			case VOICE_TEXT_JP_212 : ward2 = (char*)&VOICE_TEXT2_JP_212[0]; break;
+			case VOICE_TEXT_JP_213 : ward2 = (char*)&VOICE_TEXT2_JP_213[0]; break;
+			case VOICE_TEXT_JP_214 : ward2 = (char*)&VOICE_TEXT2_JP_214[0]; break;
+			case VOICE_TEXT_JP_215 : ward2 = (char*)&VOICE_TEXT2_JP_215[0]; break;
+			case VOICE_TEXT_JP_216 : ward2 = (char*)&VOICE_TEXT2_JP_216[0]; break;
+			case VOICE_TEXT_JP_217 : ward2 = (char*)&VOICE_TEXT2_JP_217[0]; break;
+			case VOICE_TEXT_JP_218 : ward2 = (char*)&VOICE_TEXT2_JP_218[0]; break;
+			case VOICE_TEXT_JP_219 : ward2 = (char*)&VOICE_TEXT2_JP_219[0]; break;
+			case VOICE_TEXT_JP_220 : ward2 = (char*)&VOICE_TEXT2_JP_220[0]; break;
+			case VOICE_TEXT_JP_221 : ward2 = (char*)&VOICE_TEXT2_JP_221[0]; break;
+			case VOICE_TEXT_JP_401 : ward2 = (char*)&VOICE_TEXT2_JP_401[0]; break;
+			case VOICE_TEXT_JP_402 : ward2 = (char*)&VOICE_TEXT2_JP_402[0]; break;
+			case VOICE_TEXT_JP_403 : ward2 = (char*)&VOICE_TEXT2_JP_403[0]; break;
+			case VOICE_TEXT_JP_404 : ward2 = (char*)&VOICE_TEXT2_JP_404[0]; break;
+			case VOICE_TEXT_JP_405 : ward2 = (char*)&VOICE_TEXT2_JP_405[0]; break;
+			case VOICE_TEXT_JP_406 : ward2 = (char*)&VOICE_TEXT2_JP_406[0]; break;
+			case VOICE_TEXT_JP_407 : ward2 = (char*)&VOICE_TEXT2_JP_407[0]; break;
+			case VOICE_TEXT_JP_408 : ward2 = (char*)&VOICE_TEXT2_JP_408[0]; break;
+			case VOICE_TEXT_JP_409 : ward2 = (char*)&VOICE_TEXT2_JP_409[0]; break;
+			case VOICE_TEXT_JP_410 : ward2 = (char*)&VOICE_TEXT2_JP_410[0]; break;
+			case VOICE_TEXT_JP_411 : ward2 = (char*)&VOICE_TEXT2_JP_411[0]; break;
+			case VOICE_TEXT_JP_412 : ward2 = (char*)&VOICE_TEXT2_JP_412[0]; break;
+			case VOICE_TEXT_JP_413 : ward2 = (char*)&VOICE_TEXT2_JP_413[0]; break;
+			case VOICE_TEXT_JP_414 : ward2 = (char*)&VOICE_TEXT2_JP_414[0]; break;
+			case VOICE_TEXT_JP_415 : ward2 = (char*)&VOICE_TEXT2_JP_415[0]; break;
+			case VOICE_TEXT_JP_416 : ward2 = (char*)&VOICE_TEXT2_JP_416[0]; break;
+			case VOICE_TEXT_JP_417 : ward2 = (char*)&VOICE_TEXT2_JP_417[0]; break;
+			case VOICE_TEXT_JP_418 : ward2 = (char*)&VOICE_TEXT2_JP_418[0]; break;
+			case VOICE_TEXT_JP_419 : ward2 = (char*)&VOICE_TEXT2_JP_419[0]; break;
+			case VOICE_TEXT_JP_420 : ward2 = (char*)&VOICE_TEXT2_JP_420[0]; break;
+			case VOICE_TEXT_JP_501 : ward2 = (char*)&VOICE_TEXT2_JP_501[0]; break;
+			case VOICE_TEXT_JP_502 : ward2 = (char*)&VOICE_TEXT2_JP_502[0]; break;
+			case VOICE_TEXT_JP_503 : ward2 = (char*)&VOICE_TEXT2_JP_503[0]; break;
+			case VOICE_TEXT_JP_504 : ward2 = (char*)&VOICE_TEXT2_JP_504[0]; break;
+			case VOICE_TEXT_JP_505 : ward2 = (char*)&VOICE_TEXT2_JP_505[0]; break;
+			case VOICE_TEXT_JP_506 : ward2 = (char*)&VOICE_TEXT2_JP_506[0]; break;
+			case VOICE_TEXT_JP_507 : ward2 = (char*)&VOICE_TEXT2_JP_507[0]; break;
+			case VOICE_TEXT_JP_508 : ward2 = (char*)&VOICE_TEXT2_JP_508[0]; break;
+			case VOICE_TEXT_JP_509 : ward2 = (char*)&VOICE_TEXT2_JP_509[0]; break;
+			case VOICE_TEXT_JP_510 : ward2 = (char*)&VOICE_TEXT2_JP_510[0]; break;
+			case VOICE_TEXT_JP_511 : ward2 = (char*)&VOICE_TEXT2_JP_511[0]; break;
+			case VOICE_TEXT_JP_512 : ward2 = (char*)&VOICE_TEXT2_JP_512[0]; break;
+			case VOICE_TEXT_JP_513 : ward2 = (char*)&VOICE_TEXT2_JP_513[0]; break;
+			case VOICE_TEXT_JP_514 : ward2 = (char*)&VOICE_TEXT2_JP_514[0]; break;
+			case VOICE_TEXT_JP_515 : ward2 = (char*)&VOICE_TEXT2_JP_515[0]; break;
+
+			case VOICE_TEXT_EN_101 : ward2 = (char*)&VOICE_TEXT2_EN_101[0]; break;
+			case VOICE_TEXT_EN_102 : ward2 = (char*)&VOICE_TEXT2_EN_102[0]; break;
+			case VOICE_TEXT_EN_103 : ward2 = (char*)&VOICE_TEXT2_EN_103[0]; break;
+			case VOICE_TEXT_EN_104 : ward2 = (char*)&VOICE_TEXT2_EN_104[0]; break;
+			case VOICE_TEXT_EN_105 : ward2 = (char*)&VOICE_TEXT2_EN_105[0]; break;
+			case VOICE_TEXT_EN_106 : ward2 = (char*)&VOICE_TEXT2_EN_106[0]; break;
+			case VOICE_TEXT_EN_107 : ward2 = (char*)&VOICE_TEXT2_EN_107[0]; break;
+			case VOICE_TEXT_EN_201 : ward2 = (char*)&VOICE_TEXT2_EN_201[0]; break;
+			case VOICE_TEXT_EN_202 : ward2 = (char*)&VOICE_TEXT2_EN_202[0]; break;
+			case VOICE_TEXT_EN_203 : ward2 = (char*)&VOICE_TEXT2_EN_203[0]; break;
+			case VOICE_TEXT_EN_204 : ward2 = (char*)&VOICE_TEXT2_EN_204[0]; break;
+			case VOICE_TEXT_EN_205 : ward2 = (char*)&VOICE_TEXT2_EN_205[0]; break;
+			case VOICE_TEXT_EN_206 : ward2 = (char*)&VOICE_TEXT2_EN_206[0]; break;
+			case VOICE_TEXT_EN_207 : ward2 = (char*)&VOICE_TEXT2_EN_207[0]; break;
+			case VOICE_TEXT_EN_208 : ward2 = (char*)&VOICE_TEXT2_EN_208[0]; break;
+			case VOICE_TEXT_EN_209 : ward2 = (char*)&VOICE_TEXT2_EN_209[0]; break;
+			case VOICE_TEXT_EN_210 : ward2 = (char*)&VOICE_TEXT2_EN_210[0]; break;
+			case VOICE_TEXT_EN_211 : ward2 = (char*)&VOICE_TEXT2_EN_211[0]; break;
+			case VOICE_TEXT_EN_212 : ward2 = (char*)&VOICE_TEXT2_EN_212[0]; break;
+			case VOICE_TEXT_EN_213 : ward2 = (char*)&VOICE_TEXT2_EN_213[0]; break;
+			case VOICE_TEXT_EN_214 : ward2 = (char*)&VOICE_TEXT2_EN_214[0]; break;
+			case VOICE_TEXT_EN_215 : ward2 = (char*)&VOICE_TEXT2_EN_215[0]; break;
+			case VOICE_TEXT_EN_216 : ward2 = (char*)&VOICE_TEXT2_EN_216[0]; break;
+			case VOICE_TEXT_EN_217 : ward2 = (char*)&VOICE_TEXT2_EN_217[0]; break;
+			case VOICE_TEXT_EN_218 : ward2 = (char*)&VOICE_TEXT2_EN_218[0]; break;
+			case VOICE_TEXT_EN_219 : ward2 = (char*)&VOICE_TEXT2_EN_219[0]; break;
+			case VOICE_TEXT_EN_220 : ward2 = (char*)&VOICE_TEXT2_EN_220[0]; break;
+			case VOICE_TEXT_EN_221 : ward2 = (char*)&VOICE_TEXT2_EN_221[0]; break;
+			case VOICE_TEXT_EN_401 : ward2 = (char*)&VOICE_TEXT2_EN_401[0]; break;
+			case VOICE_TEXT_EN_402 : ward2 = (char*)&VOICE_TEXT2_EN_402[0]; break;
+			case VOICE_TEXT_EN_403 : ward2 = (char*)&VOICE_TEXT2_EN_403[0]; break;
+			case VOICE_TEXT_EN_404 : ward2 = (char*)&VOICE_TEXT2_EN_404[0]; break;
+			case VOICE_TEXT_EN_405 : ward2 = (char*)&VOICE_TEXT2_EN_405[0]; break;
+			case VOICE_TEXT_EN_406 : ward2 = (char*)&VOICE_TEXT2_EN_406[0]; break;
+			case VOICE_TEXT_EN_407 : ward2 = (char*)&VOICE_TEXT2_EN_407[0]; break;
+			case VOICE_TEXT_EN_408 : ward2 = (char*)&VOICE_TEXT2_EN_408[0]; break;
+			case VOICE_TEXT_EN_409 : ward2 = (char*)&VOICE_TEXT2_EN_409[0]; break;
+			case VOICE_TEXT_EN_410 : ward2 = (char*)&VOICE_TEXT2_EN_410[0]; break;
+			case VOICE_TEXT_EN_411 : ward2 = (char*)&VOICE_TEXT2_EN_411[0]; break;
+			case VOICE_TEXT_EN_412 : ward2 = (char*)&VOICE_TEXT2_EN_412[0]; break;
+			case VOICE_TEXT_EN_413 : ward2 = (char*)&VOICE_TEXT2_EN_413[0]; break;
+			case VOICE_TEXT_EN_414 : ward2 = (char*)&VOICE_TEXT2_EN_414[0]; break;
+			case VOICE_TEXT_EN_415 : ward2 = (char*)&VOICE_TEXT2_EN_415[0]; break;
+			case VOICE_TEXT_EN_416 : ward2 = (char*)&VOICE_TEXT2_EN_416[0]; break;
+			case VOICE_TEXT_EN_501 : ward2 = (char*)&VOICE_TEXT2_EN_501[0]; break;
+			case VOICE_TEXT_EN_502 : ward2 = (char*)&VOICE_TEXT2_EN_502[0]; break;
+			case VOICE_TEXT_EN_503 : ward2 = (char*)&VOICE_TEXT2_EN_503[0]; break;
+			case VOICE_TEXT_EN_504 : ward2 = (char*)&VOICE_TEXT2_EN_504[0]; break;
+			case VOICE_TEXT_EN_505 : ward2 = (char*)&VOICE_TEXT2_EN_505[0]; break;
+			case VOICE_TEXT_EN_506 : ward2 = (char*)&VOICE_TEXT2_EN_506[0]; break;
+			case VOICE_TEXT_EN_507 : ward2 = (char*)&VOICE_TEXT2_EN_507[0]; break;
+			case VOICE_TEXT_EN_508 : ward2 = (char*)&VOICE_TEXT2_EN_508[0]; break;
+			case VOICE_TEXT_EN_509 : ward2 = (char*)&VOICE_TEXT2_EN_509[0]; break;
+			case VOICE_TEXT_EN_510 : ward2 = (char*)&VOICE_TEXT2_EN_510[0]; break;
+			}
+			if (NULL != ward2) {
+				strcat(ward1, ward2);
+			}
+		}
+#endif
+
+		// char型 -> jstring型へUTF変換
+		//outstr = env->NewStringUTF((char*)ward1);
+
+		// 文字列設定
+		//env->CallObjectMethod(rtVOICETTS, mid, outstr);
+	}
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
+
+	return(result);
+}
+
 INT32 NC_Simulation_StartSimulation() {
 
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
-	//E_SC_SIMSTATE status;
-	//E_SC_SIMULATE simulate;
 	INT32 result = NC_RESULT_SIM_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_NC, SC_LOG_START);
@@ -1133,7 +1336,6 @@ INT32 NC_Simulation_StartSimulation() {
 void NC_Simulation_PauseSimulation() {
 
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
-	//INT32 result = NC_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_NC, SC_LOG_START);
 
@@ -1197,7 +1399,6 @@ INT32 NC_Simulation_CalcNextPos() {
 
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	E_SC_SIMSTATE status;
-	//E_SC_SIMULATE simulate;
 	E_GUIDE_STATUS guideStatus;
 	INT32 result = NC_RESULT_SIM_FAILD;
 
@@ -1366,7 +1567,6 @@ INT32 NC_Simulation_GetSpeed() {
 
 void NC_Simulation_ResumeSimulation() {
 
-	//INT32 result = NC_SUCCESS;
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_NC, SC_LOG_START);

@@ -69,7 +69,6 @@ E_SC_RESULT RG_CTL_SH_SetDeviationInfo(RG_CTL_MAIN_t *guidectl_p)
 
 	E_SC_RESULT				ret = e_SC_RESULT_SUCCESS;
 	E_DEVIATION_STATUS		status = false;
-	//INT32					count  = 0;
 
 	if (NULL == guidectl_p) {
 		SC_LOG_ErrorPrint(SC_TAG_RG, "[CTL] ERROR " HERE);
@@ -317,7 +316,6 @@ E_SC_RESULT RG_CTL_SH_SetTurnList(RT_LST_MAIN_t *turnlist_p)
 E_SC_RESULT RG_CTL_SH_SetDynamicGraphicStat(RG_CTL_MAIN_t *guidectl_p){
 
 	E_SC_RESULT				ret = e_SC_RESULT_SUCCESS;
-	//SMBITMAPINFO			bitmapinfo;
 	RG_CTL_TRACK_t			*track_p;
 
 	if (NULL == guidectl_p) {

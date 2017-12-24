@@ -21,8 +21,6 @@ INT32 RT_LIB_GetCrossAngle(DOUBLE i_x, DOUBLE i_y, DOUBLE c_x, DOUBLE c_y, DOUBL
 	RT_VECTOR2_t			c, p, q;   		// 入力データ
 	RT_VECTOR2_t			cp;       		// ベクトル C→P
 	RT_VECTOR2_t			cq;        		// ベクトル C→Q
-	//DOUBLE					lati;
-	//DOUBLE					longi;
 	DOUBLE					s; 				// 外積：(C→P) × (C→Q)
 	DOUBLE					t; 				// 内積：(C→P) ・ (C→Q)
 	DOUBLE					theta;			// θ (ラジアン)
@@ -59,7 +57,6 @@ INT32 RT_LIB_GetCrossAngle2(DOUBLE ii_x, DOUBLE ii_y, DOUBLE io_x, DOUBLE io_y, 
 	RT_VECTOR2_t			c, p, q;   		// 入力データ
 	RT_VECTOR2_t			cp;       		// ベクトル C→P
 	RT_VECTOR2_t			cq;        		// ベクトル C→Q
-	//DOUBLE					lati;
 	DOUBLE					longi;
 	DOUBLE					s; 				// 外積：(C→P) × (C→Q)
 	DOUBLE					t; 				// 内積：(C→P) ・ (C→Q)

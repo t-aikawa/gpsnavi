@@ -45,6 +45,7 @@
 #define ROAD15_BASECOST		(720)			/* 道路種別15(歩道)基準コスト */
 
 #define ON_TOLL_COST		(12000)			/* 一般優先用：高速乗りコスト */
+#define RCREG_PENALTY_COST	(100000)		/* 規制：規制ペナルティコスト */
 
 // 北０時計回り→東０度半時計回り変換マクロ
 #define RP_ANGLE_N2E_CNV(angle)		(359 < (360 - (UINT32)(angle) + 90) ? ((360 - (UINT32)(angle) + 90) - 360) : (360 - (UINT32)(angle) + 90))
@@ -82,7 +83,7 @@ typedef struct _SCRC_IOCALCTBL {
 	SCRC_RESULTCOSTS costTable;					// コストテーブル
 	UINT8* inLinkBin;							// 侵入リンクバイナリアドレス
 	UINT8* outLinkBin;							// 退出リンクバイナリアドレス
-	U_LINK_NET_FLAG reg;						// 規制フラグ
+	UINT32 regResult;							// 規制判定結果
 } SCRC_IOCALCTBL;
 
 #endif /* RC_COSTCALC_H_ */

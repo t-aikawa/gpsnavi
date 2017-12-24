@@ -455,7 +455,6 @@ void XMLCALL CC_AppconfReg_StartElement(void *userData, const char *name, const 
 void XMLCALL CC_AppconfReg_EndElement(void *userData, const char *name)
 {
 	APPCONF_PARSER *parser = (APPCONF_PARSER*)userData;
-	//APPCONF	*conf = NULL;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -516,7 +515,6 @@ void XMLCALL CC_AppconfReg_EndElement(void *userData, const char *name)
 void XMLCALL CC_AppconfReg_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	APPCONF_PARSER *parser = (APPCONF_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

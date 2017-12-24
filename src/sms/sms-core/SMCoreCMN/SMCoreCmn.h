@@ -16,34 +16,34 @@
 //-----------------------------------
 // ログ出力
 //-----------------------------------
-#define	SC_TAG_NC			"NaviCore"
-#define	SC_TAG_CORE			"SMCore"
-#define	SC_TAG_MEM			"SMCoreMem"
-#define	SC_TAG_SHARE		"SMCoreShare"
-#define	SC_TAG_CASH			"SMCoreCash"
-#define	SC_TAG_FM			"SMCoreFM"
-#define	SC_TAG_MP			"SMCoreMP"
-#define	SC_TAG_RM			"SMCoreRM"
-#define	SC_TAG_RC			"SMCoreRC"
-#define	SC_TAG_RG			"SMCoreRG"
-#define	SC_TAG_RT			"SMCoreRT"
-#define	SC_TAG_DH			"SMCoreDH"
-#define	SC_TAG_DHC			"SMCoreDHC"
-#define	SC_TAG_LC			"SMCoreLC"
-#define	SC_TAG_CC			"SMCC"
-#define	SC_TAG_PM			"SMPM"
-#define	SC_TAG_PU			"SMPU"
-#define	SC_TAG_PT			"SMPT"
-#define	SC_TAG_PDAL			"SMPDAL"
-#define SC_TAG_SDM			"SMSDM"
-#define SC_TAG_SDD			"SMSDD"
-#define SC_TAG_SDU			"SMSDU"
-#define SC_TAG_SDT			"SMSDT"
-#define SC_TAG_SDP			"SMSDP"
-#define	SC_TAG_DAL			"SMCoreDAL"
-#define	SC_TAG_PAL			"SMCorePAL"
-#define	SC_TAG_TR			"SMCoreTR"
-#define	SC_TAG_TRT			"SMCoreTRT"
+#define	SC_TAG_NC			(Char*)"NaviCore"
+#define	SC_TAG_CORE			(Char*)"SMCore"
+#define	SC_TAG_MEM			(Char*)"SMCoreMem"
+#define	SC_TAG_SHARE		(Char*)"SMCoreShare"
+#define	SC_TAG_CASH			(Char*)"SMCoreCash"
+#define	SC_TAG_FM			(Char*)"SMCoreFM"
+#define	SC_TAG_MP			(Char*)"SMCoreMP"
+#define	SC_TAG_RM			(Char*)"SMCoreRM"
+#define	SC_TAG_RC			(Char*)"SMCoreRC"
+#define	SC_TAG_RG			(Char*)"SMCoreRG"
+#define	SC_TAG_RT			(Char*)"SMCoreRT"
+#define	SC_TAG_DH			(Char*)"SMCoreDH"
+#define	SC_TAG_DHC			(Char*)"SMCoreDHC"
+#define	SC_TAG_LC			(Char*)"SMCoreLC"
+#define	SC_TAG_CC			(Char*)"SMCC"
+#define	SC_TAG_PM			(Char*)"SMPM"
+#define	SC_TAG_PU			(Char*)"SMPU"
+#define	SC_TAG_PT			(Char*)"SMPT"
+#define	SC_TAG_PDAL			(Char*)"SMPDAL"
+#define SC_TAG_SDM			(Char*)"SMSDM"
+#define SC_TAG_SDD			(Char*)"SMSDD"
+#define SC_TAG_SDU			(Char*)"SMSDU"
+#define SC_TAG_SDT			(Char*)"SMSDT"
+#define SC_TAG_SDP			(Char*)"SMSDP"
+#define	SC_TAG_DAL			(Char*)"SMCoreDAL"
+#define	SC_TAG_PAL			(Char*)"SMCorePAL"
+#define	SC_TAG_TR			(Char*)"SMCoreTR"
+#define	SC_TAG_TRT			(Char*)"SMCoreTRT"
 
 
 #define	_STR(x)				#x
@@ -59,8 +59,8 @@
 #define COUNTOF(array)				(_CHECK_ARRAY2(array, __LINE__), sizeof(array)/sizeof*(array))
 #endif /* __SMS_APPLE__ */
 
-#define SC_LOG_START		"[START] %s()\n", __FUNCTION__
-#define SC_LOG_END			"[END]   %s()\n", __FUNCTION__
+#define SC_LOG_START		(Char*)"[START] %s()\n", __FUNCTION__
+#define SC_LOG_END			(Char*)"[END]   %s()\n", __FUNCTION__
 
 #define USE_IT(x)			(void)(x)	// 未使用引数に対するコンパイル時Warning警告対策
 

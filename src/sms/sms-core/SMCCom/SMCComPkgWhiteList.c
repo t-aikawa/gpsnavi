@@ -85,7 +85,6 @@ E_SC_RESULT CC_Pkg_GetPkgWhiteList(SMCAL *smcal,
 								   INT32 *pkgWhiteListNum)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
 	Char	*tempDirPath = NULL;
 	Char	*xmlFilePath = NULL;
 	INT32	whiteListNum = -1;
@@ -184,7 +183,6 @@ E_SC_RESULT CC_Pkg_WhiteList_XmlParse(const Char *xmlFilePath,
 	XML_Parser parser = NULL;
 	INT32	done = 0;
 	INT32	len = 0;
-	//INT32	parsedLen = 0;
 	FILE	*fp = NULL;
 	INT32	tmpPkgWhiteListNum = 0;
 	SMPKGWHITELIST	*tmpPkgWhiteList = NULL;
@@ -445,7 +443,8 @@ void XMLCALL CC_Pkg_WhiteList_EndElement(void *userData, const char *name)
 		}
 
 		list = &parser->tmpPkgWhiteList[*parser->tmpPkgWhiteListNum];
-		if (CC_PKG_WHITELIST_NODE_PKG_LIST == parser->state) {
+
+		if (CC_PKG_WHITELIST_NODE_PKG_LIST == parser->state) {
 			// <pkg_list>
 			parser->state = CC_PKG_WHITELIST_NODE_XML;
 		} else if (CC_PKG_WHITELIST_NODE_PKG_LIST_ITEM == parser->state) {
@@ -511,7 +510,6 @@ void XMLCALL CC_Pkg_WhiteList_EndElement(void *userData, const char *name)
 void XMLCALL CC_Pkg_WhiteList_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	PKGWHITELIST_PARSER *parser = (PKGWHITELIST_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

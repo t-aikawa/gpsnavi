@@ -78,10 +78,12 @@ E_SC_RESULT SC_MNG_GetPlanning(Bool *isPlanning);
 E_SC_RESULT SC_MNG_SetPlanning(Bool isPlanning);
 E_SC_RESULT SC_MNG_GetRPOption(SMRPOPTION *option);
 E_SC_RESULT SC_MNG_SetRPOption(const SMRPOPTION *option);
+E_SC_RESULT SC_SHARE_GetRouteSearchTime(SC_DH_SHARE_RPSEARCHTIME *time);
+E_SC_RESULT SC_SHARE_SetRouteSearchTime(const SC_DH_SHARE_RPSEARCHTIME *time);
 E_SC_RESULT SC_MNG_GetRPTip(SMRPTIPINFO *tipInfo);
 E_SC_RESULT SC_MNG_SetRPTip(const SMRPTIPINFO *tipInfo);
-E_SC_RESULT SC_MNG_DoRoute(E_ROUTE route);
-E_SC_RESULT SC_MNG_RePlan(E_ROUTE route);
+E_SC_RESULT SC_MNG_DoRoute(E_ROUTE route, INT64 time);
+E_SC_RESULT SC_MNG_RePlan(E_ROUTE route, INT64 time);
 E_SC_RESULT SC_MNG_DoGuide(E_GUIDE_STATUS event);
 E_SC_RESULT SC_MNG_CancelPlanningRoute();
 E_SC_RESULT SC_MNG_DeleteRouteResult();
@@ -185,6 +187,9 @@ E_SC_RESULT SC_MNG_GetMappingAlert(SMMAPPINGALERT *mappingAlert);
 E_SC_RESULT SC_MNG_SetTrafficInfo(SMTRAFFIC *trfInfo);
 E_SC_RESULT SC_MNG_GetTrafficInfo(SMTRAFFIC *trfInfo);
 E_SC_RESULT SC_MNG_RefreshTraffic(INT32 mode);
+
+E_SC_RESULT SC_MNG_SetSearchTime(INT64 time);
+E_SC_RESULT SC_MNG_GetSearchTime(SMRPSEARCHTIME *aSearchTime);
 
 #ifdef __cplusplus
 }

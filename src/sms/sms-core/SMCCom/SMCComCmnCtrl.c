@@ -149,8 +149,6 @@ E_SC_RESULT CC_InitializeCmnCtrl(const Char* pTerm_id,
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	E_SC_CAL_RESULT calRet = CC_CMN_RESULT_SMCAL_OK;
 	UINT32	len = 0;
-	//Char	*srcFilePath = NULL;
-	//Char	*dstFilePath = NULL;
 	INT32	num = 0;
 	Char	*logFile[CC_CMN_API_CONCURRENCY_MAXNUM] = {};
 
@@ -509,11 +507,8 @@ void CC_FinalizeCmnCtrl()
  */
 E_SC_RESULT CC_RegistrationDevice(Char* pApiSts)
 {
-	//INT32 optinfnum;
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	SMCAL	*cal = NULL;
-	//Char	*recvBuf = NULL;
-	//INT32	recvBufSize = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -604,7 +599,6 @@ E_SC_RESULT CC_RegistrationUser(const Char* pUsername,
 								const Char* pLang,
 								Char* pApiSts)
 {
-	//INT32 optinfnum;
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	UINT32	len = 0;
 	SMCAL	*cal = NULL;
@@ -859,7 +853,6 @@ E_SC_RESULT CC_AuthenticationUserInternal(SMCAL* pCal,
 										  Char* pApiSts,
 										  Bool isPolling)
 {
-	//INT32 optinfnum;
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	Char login_id[CC_CMN_LOGINID_STR_SIZE] = {};
 	Char password[CC_CMN_PASSWORD_STR_SIZE] = {};
@@ -1010,7 +1003,6 @@ E_SC_RESULT CC_AgreeAuthenticationUser(const Char* pId,
 									   Char* pApiSts)
 
 {
-	//INT32 optinfnum;
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	Char login_id[CC_CMN_LOGINID_STR_SIZE] = {};
 	Char password[CC_CMN_PASSWORD_STR_SIZE] = {};
@@ -2067,7 +2059,6 @@ E_SC_RESULT CC_TremsApprovalInfo(SMTERMSINFO *termsInfo, Bool isDownload, const 
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	Char apiSts[CC_CMN_USER_MESSAGE_AREA_SIZE] = {};
-	//INT16 result = 0;										// 結果
 	Char pUserInfo[SCC_MAX_PATH] = {};
 	struct stat st = {};
 	int stat_ret = 0;
@@ -2181,7 +2172,6 @@ E_SC_RESULT CC_TremsApprovalInfo(SMTERMSINFO *termsInfo, Bool isDownload, const 
 E_SC_RESULT CC_GetUserInfo(Char *userName, Char *id, Char *password)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//Char	pUserInfo[SCC_MAX_PATH];
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -3787,7 +3777,6 @@ E_SC_RESULT CC_SearchUnreadMsgRoom_Polling(SMUNREADMSGROOM *unrdMsgRm,
 E_SC_RESULT CC_GetUserSig(Char *user_sig)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//Char	pUserInfo[SCC_MAX_PATH];
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -4074,8 +4063,6 @@ E_SC_RESULT CC_SearchPosInfo(const Char *roomNo, SMPOSITIONINFO *posInfo, INT32 
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT	ret2 = e_SC_RESULT_SUCCESS;
-	//Char	guid[CC_CMN_GUID_STR_SIZE] = {};
-	//INT32	posNum = 0;
 	INT32	num = 0;
 	Char	apiSts2[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
@@ -4195,9 +4182,6 @@ E_SC_RESULT CC_SearchPosInfo_Polling(const Char *roomNo, SMPOSITIONINFO *posInfo
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT	ret2 = e_SC_RESULT_SUCCESS;
-	//Char	guid[CC_CMN_GUID_STR_SIZE] = {};
-	//Char	act_sts[CC_CMN_ACT_STATUS_STR_SIZE] = {};			// TR3.5 アクティベーション対応
-	//INT32	posNum = 0;
 	INT32	num = 0;
 	Char	apiSts2[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
@@ -4614,9 +4598,7 @@ E_SC_RESULT CC_CheckMapUpdate(SMCHECKUPDINFO *chkUpdInf, Char *apiStatus)
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	Char	*dlTempDirPath = NULL;
 	SMMAPDLCBFNC	callbackFnc = {};
-	//INT32	num = 0;
 	SMMAPUPDSTATUS	*updStatus = NULL;
-	//Char	backetName[SCC_AWS_BACKETNAME_SIZE + 1] = {};
 	Bool	errComeback = false;
 	SMCAL	*cal = NULL;
 	Char	*recvBuf = NULL;
@@ -5068,7 +5050,6 @@ E_SC_RESULT CC_UpdateData(SMUPDINFO *mapUpdInfo, SMDLERRORINFO *errInfo, Char *a
 	SMCHECKUPDINFO	*chkUpdInf = NULL;
 	SMMAPUPDSTATUS	*updStatus = NULL;
 	Bool	errComeback = false;
-	//Char	*filePath = NULL;
 	SMCAL	*cal = NULL;
 	Char	*recvBuf = NULL;
 	INT32	recvBufSize = 0;
@@ -5398,7 +5379,6 @@ E_SC_RESULT CC_UpdateData_ComebackCheck(SMCAL *cal, const SMMAPUPDSTATUS *updSta
 	SMPROGRESSCBFNC	callbackFnc = {};
 	FILE	*fp = NULL;
 	FILE	*fp2 = NULL;
-	//struct	stat st = {};
 	Char	ver[SCC_VERSION_SIZE] = {};
 	Char	ver2[SCC_VERSION_SIZE] = {};
 
@@ -6122,7 +6102,6 @@ E_SC_RESULT CC_PrjNoReq(Char *projectNo, Char *apiStatus)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT	ret2 = e_SC_RESULT_SUCCESS;
-	//Char	*recvBuf = NULL;
 	INT32	num = 0;
 	Char	apiSts2[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
@@ -7547,7 +7526,6 @@ E_SC_RESULT CC_UserSearch(const SMUSERSRCH *userSearch,
 E_SC_RESULT CC_GetAuthInfo(Char **termId, Char **termSig, Char **guid, Char **userSig)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//Char	pUserInfo[SCC_MAX_PATH];
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -7604,7 +7582,6 @@ E_SC_RESULT CC_GetAuthInfo(Char **termId, Char **termSig, Char **guid, Char **us
 E_SC_RESULT CC_GetAuthSessionCookie(Bool isReAuth, Char **sessionCookie)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//Char	pUserInfo[SCC_MAX_PATH] = {};
 	Char	apiSts[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
 	SMCAL	*cal = NULL;
@@ -10895,7 +10872,6 @@ E_SC_RESULT CC_UpdatePassword(const Char *password,
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT	ret2 = e_SC_RESULT_SUCCESS;
 	INT32	num = 0;
-	//INT32	num2 = 0;
 	Char	apiSts2[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
 	SMCAL	*cal = NULL;
@@ -11315,7 +11291,6 @@ E_SC_RESULT CC_GetTrafficInfo(const SMTRAFFICSRCH *trafficSrch, SMTRAFFICINFO *t
 E_SC_RESULT CC_GetOAuthUrl(const Char *serviceId, Char *url, Char *sessionId, Char *apiStatus)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//INT32	num = 0;
 	SMCAL	*cal = NULL;
 	Char	*recvBuf = NULL;
 	INT32	recvBufSize = 0;
@@ -11915,7 +11890,6 @@ E_SC_RESULT CC_ReAuthenticationUser(SMCAL* pCal,
 									Char* pApiSts,
 									Bool isPolling)
 {
-	//INT32 optinfnum;
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	Char login_id[CC_CMN_LOGINID_STR_SIZE] = {};
 	Char password[CC_CMN_PASSWORD_STR_SIZE] = {};

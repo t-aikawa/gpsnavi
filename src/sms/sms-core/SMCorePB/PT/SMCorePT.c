@@ -21,7 +21,6 @@ static void SC_PT_StartTimer(pthread_msq_msg_t *msg);
  */
 void SC_PT_MsgAnalyze(pthread_msq_msg_t *msg)
 {
-	//E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_PT, SC_LOG_START);
 

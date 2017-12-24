@@ -50,7 +50,6 @@ E_SC_RESULT SC_SDU_CreateJsonFile(const SCC_AUTHINFO *authInfo,
 	Char	*ptr = NULL;
 	Char	tripId[SC_SD_TRIP_ID_SIZE] = {};
 	INT32	i = 0;
-	//INT32	j = 0;
 	Bool	isTimeChenged = false;
 	Char	time[20] = {};
 	Char	timeMS[4] = {};

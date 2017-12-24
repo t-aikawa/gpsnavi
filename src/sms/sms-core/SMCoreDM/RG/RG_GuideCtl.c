@@ -59,7 +59,7 @@ E_SC_RESULT RG_CTL_GuideMain()
 		// 緯度経度→座標変換
 		lat = (DOUBLE) carState.coord.latitude / 1024;
 		lon = (DOUBLE) carState.coord.longitude / 1024;
-		MESHC_ChgLatLonToParcelID(lat, lon, 1, &parcel_id, &x, &y);
+		SC_Lib_ChangeTitude2PID(lat, lon, 1, &parcel_id, &x, &y);
 
 		// 誘導制御テーブル取得
 		guidectl_p = RG_CTL_GetCtlTbl();
@@ -138,14 +138,14 @@ E_SC_RESULT RG_CTL_GuideMain()
 			SC_LOG_ErrorPrint(SC_TAG_RG, "[CTL] ERROR " HERE);
 			break;
 		}
-#if 0	// kana暫定
+
 		// 音声発話ＴＴＳ設定
 		ret = RG_CTL_SetGuideVoice(guidetbl_p, guidectl_p);
 		if (e_SC_RESULT_SUCCESS != ret) {
 			SC_LOG_ErrorPrint(SC_TAG_RG, "[CTL] ERROR " HERE);
 			break;
 		}
-#endif
+
 		// 誘導テーブル追加要求チェック
 		ret = RG_CTL_TblAddReqCheck(guidetbl_p, guidectl_p);
 		if (e_SC_RESULT_SUCCESS != ret) {

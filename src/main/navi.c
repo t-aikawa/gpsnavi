@@ -16,9 +16,9 @@
  */
 
 /*
- * 	1st demo version 2015.11.17	Ver. 0.0.6
- * 	2nd oss  version 2016.06.12	Ver. 0.0.7
- * 	3rd oss  version 2017.12.10	Ver. 0.0.10
+ * 		1st demo version 2015.11.17		Ver. 0.0.6
+ * 		2nd oss  version 2016.06.12		Ver. 0.0.7
+ * 		3rd oss  version 2017.12.24		Ver. 0.1.0
  */
 
 #include <math.h>
@@ -33,7 +33,7 @@
 #include "navi.h"
 #include "HMI_Icon.h"
 
-#define APP_VERSION_TEXT	"Version 0.0.10 (" __DATE__ ")"
+#define APP_VERSION_TEXT	"Version 0.1.0 (" __DATE__ ")"
 #define APP_TITLE_TEXT		"GPS Navigation"
 #define APP_NAME_TEXT		APP_TITLE_TEXT " " APP_VERSION_TEXT
 
@@ -89,6 +89,8 @@ static int resolution = NAVI_RESOLUTION_AGL_DEMO;
 
 static int region     = NAVI_REGION_JAPAN;
 //static int region     = NAVI_REGION_UK;
+
+static INT32 tts_language     = SYS_LANGUAGE_JP;
 
 void naviGetResolution(int *w,int *h)
 {
@@ -432,6 +434,7 @@ static void usage(void)
 	fprintf(stdout,"  --width  WIDTH              width  of wayland surface\n");
 	fprintf(stdout,"  --height HEIGHT             height of wayland surface\n");
 	fprintf(stdout,"  --data   data_path          set the map data path\n");
+	fprintf(stdout,"  --tts  [ jp | en ]          set the tts language\n");
 	fprintf(stdout,"  --help                      this help message\n");
 }
 
@@ -506,6 +509,14 @@ int main_arg(int argc, char *argv[])
 			region = NAVI_REGION_OPTIONAL;
 			i++;
 		}
+		else if (strcmp(argv[i], "--tts") == 0) {
+			if(strcmp(argv[i+1], "jp") == 0) {
+				tts_language     = SYS_LANGUAGE_JP;
+			}else if(strcmp(argv[i+1], "en") == 0) {
+				tts_language     = SYS_LANGUAGE_EN;
+			}
+			i++;
+		}
 		else if (strcmp(argv[i], "--help") == 0) {
 			usage();
 			return(-1);
@@ -567,6 +578,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr," map  db   path(%s)\n",navi_config_map_db_path);
 		return(-1);
 	}
+
+	NC_DM_SetLanguage(tts_language);
 
 	NC_MP_SetMapMoveWithCar(NC_MP_MAP_MAIN,1);
 	NC_MP_SetMapScaleLevel(NC_MP_MAP_MAIN,main_window_mapScale);

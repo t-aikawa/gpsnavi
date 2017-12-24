@@ -17,7 +17,6 @@
 E_SC_RESULT SC_RG_Initialize()
 {
 	E_SC_RESULT			ret = e_SC_RESULT_SUCCESS;
-	//RT_LST_MAIN_t		*turnlist_p;
 
 	SC_LOG_DebugPrint(SC_TAG_RG, SC_LOG_START);
 
@@ -54,7 +53,6 @@ E_SC_RESULT SC_RG_Finalize()
  */
 void *SC_RG_ThreadMain(void *param)
 {
-	//E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	rc = 0;
 	pthread_msq_msg_t	rmsg = {};
 

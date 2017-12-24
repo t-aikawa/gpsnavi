@@ -191,7 +191,6 @@ E_SC_RESULT CC_GemAlt_CreatePostParam(const T_CC_CMN_SMS_API_PRM *parm,
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	num = 0;
 	struct stat	st = {};
-	//time_t	nowTime = {0};
 	CC_IMAGE_MIMETYPE	mimeType = CC_IMAGE_MIMETYPE_NONE;
 
 	do {
@@ -563,7 +562,6 @@ void XMLCALL CC_GemAlt_EndElement(void *userData, const char *name)
 void XMLCALL CC_GemAlt_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	GEMALT_PARSER *parser = (GEMALT_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

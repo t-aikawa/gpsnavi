@@ -56,6 +56,10 @@ int sample_get_guide_info(SMREALTIMEGUIDEDATA	*guide_info)
 static void *guideThread(void *no_arg)
 {
 	int	rc = 0;
+	INT32 result;
+	int endFlag=0;
+	char text_to_speech[256];
+
 	pthread_msq_msg_t	rmsg = {};
 
 	pthread_mutex_init(&pthread_current_guide_info_mutex,NULL);
@@ -125,7 +129,17 @@ static void *guideThread(void *no_arg)
 				}else{
 					current_guide_info_status = 0;	// 誘導情報を無効にする
 				}
-#ifdef ENABLE_GIDE_TEXT
+				result =  NC_Guide_GetVoiceTTS(text_to_speech);
+				if(result == NC_SUCCESS){
+					if(text_to_speech[0] != 0){
+						if(endFlag != 1) fprintf(stdout,"%s\n",text_to_speech);
+						if(guide_info.turnDir == 23){
+							/* 目的地 */
+							endFlag=1;
+						}
+					}
+				}
+#if 0
 /* ------------------------------------------------------------------------------------------------- */
 {
 	char *guideText[]={
@@ -156,33 +170,18 @@ static void *guideThread(void *no_arg)
 	/*[24]*/ "料金所",
 	/*[25]*/ ""
 	};
-	printf("guide.turnDir %d , remainDistToNextTurn %ld m\n",guide_info.turnDir,guide_info.remainDistToNextTurn);
+	fprintf(stdout,"guide.turnDir %d , remainDistToNextTurn %ld m\n",guide_info.turnDir,guide_info.remainDistToNextTurn);
 	if((guide_info.turnDir > 0)&&(guide_info.turnDir < 25)){
-		printf("%s\n",guideText[guide_info.turnDir]);
+		fprintf(stdout,"%s\n",guideText[guide_info.turnDir]);
 	}
 }
-#endif //#ifdef ENABLE_GIDE_TEXT
-/* ------------------------------------------------------------------------------------------------- */
-#if 0
-			// set value
-			env->SetIntField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_iTurnDir, (jint) guide.turnDir);
-			env->SetIntField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_iBypass, (jint) guide.bypass);
-			env->SetIntField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_iRoadSituation, (jint) guide.roadSituation);
-			env->SetIntField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_byNextBypassIndex, (jint) guide.nextBypassIndex);
-			env->SetBooleanField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_bShowTrafficLight, (jboolean) guide.showTrafficLight);
-			env->SetBooleanField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_bDestination, (jboolean) guide.destination);
-			env->SetBooleanField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_bAheadPoint, (jboolean) guide.aheadPoint);
-			env->SetBooleanField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_bValid, (jboolean) guide.valid);
-			env->SetLongField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_lRemainTimeToNextPlace, (jlong) guide.remainTimeToNextPlace);
-			env->SetLongField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_lRemainDistToNextPlace, (jlong) guide.remainDistToNextPlace);
-			env->SetLongField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_lRemainDistToNextTurn, (jlong) guide.remainDistToNextTurn);
-			env->SetLongField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_lPassedDistance, (jlong) guide.passedDistance);
-			env->SetObjectField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_strNextBroadString, jstrBuf);
 #endif
+/* ------------------------------------------------------------------------------------------------- */
 			sample_hmi_set_fource_update_mode();
 			sample_hmi_request_mapDraw();
 			break;
 		case GUIDE_ON_GUIDE_START:
+			endFlag=0;
 			current_guide_info_status = 0;	// 誘導情報を無効にする
 #if 1		/* 誘導が開始しない・・・なぜかわからないけど、おまじない。 */
 			NC_Simulation_StartSimulation();	//	シミュレーションを開始する
@@ -196,6 +195,7 @@ static void *guideThread(void *no_arg)
 			pthreadStartTimer(guide_threadId,GUIDE_TIMER_ID);
 			break;
 		case GUIDE_ON_GUIDE_END:
+			endFlag=1;
 			current_guide_info_status = 0;	// 誘導情報を無効にする
 			NC_Guide_StopGuide();				//	経路誘導を終了する
 			NC_Simulation_ExitSimulation();		//	シミュレーションを終了する

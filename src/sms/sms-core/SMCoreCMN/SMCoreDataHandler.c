@@ -100,6 +100,7 @@ const static SC_SHARE_FUNC_TBL funcTbl[SC_SHARE_FUNC_TBL_NUM] = {
 	{(SC_DH_Func)SC_SHARE_GetLanguage,			(SC_DH_Func)SC_SHARE_SetLanguage},			// 言語
 	{(SC_DH_Func)SC_SHARE_GetMappingAlert,		(SC_DH_Func)SC_SHARE_SetMappingAlert},		// アラート表示情報
 	{(SC_DH_Func)SC_SHARE_GetTraffic,			(SC_DH_Func)SC_SHARE_SetTraffic},			// 交通情報
+	{(SC_DH_Func)SC_SHARE_GetRouteSearchTime,	(SC_DH_Func)SC_SHARE_SetRouteSearchTime},	// 探索時間
 };
 
 //-----------------------------------
@@ -632,7 +633,6 @@ E_SC_RESULT SC_DH_GetRouteBackup(SMROUTEBACKUP* backup) {
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT ret2 = e_SC_RESULT_SUCCESS;
 	Bool isMutexLocked = false;
-	//INT32 result = 0;
 
 	SC_LOG_DebugPrint(SC_TAG_DH, SC_LOG_START);
 

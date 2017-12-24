@@ -218,7 +218,6 @@ E_SC_RESULT RC_CandMake(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER* aNetCt
 #endif
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
-	//SCRP_CANDMANAGER* candMng = &aSectCtrl->candMng;
 
 	// 候補開始リンク情報回収＆候補リンク情報を作成
 	switch (aStep) {
@@ -631,25 +630,38 @@ static E_SC_RESULT makeStartCandLv1O(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONT
 						targetLinkInfo = RCNET_GET_HISTLINKINFO(aNetCtrl, targetNetData);
 						targetNetData = RCNET_GET_HISTNETDATA(aNetCtrl, targetNetData);
 					}
+					if (targetNetData == NULL) {
+						continue;
+					}
+
+					// 候補開始リンクへ登録する
+					UINT32 count = 0;
+					result = setSplitStartCandFormJoin(aSectCtrl, targetPclInfo, targetLinkInfo, targetNetData, setLinkExDataUpLvConnect,
+							&count);
+					if (e_SC_RESULT_SUCCESS != result) {
+						SC_LOG_ErrorPrint(SC_TAG_RC, "setStartCandFormJoin error. [0x%08x] "HERE, result);
+						return (result);
+					}
+					candRoute->stLinkSize += count;
 				} else if (RCND_GET_CANDSPLITFLG(netData->flag)) {
 					// 断裂候補開始リンク
 					targetNetData = netData;
 					targetLinkInfo = linkInfo;
 					targetPclInfo = pclInfo;
-				}
-				if (targetNetData == NULL) {
-					continue;
-				}
+					if (targetNetData == NULL) {
+						continue;
+					}
 
-				// 候補開始リンクへ登録する
-				UINT32 count = 0;
-				result = setSplitStartCandFormJoin(aSectCtrl, targetPclInfo, targetLinkInfo, targetNetData, setLinkExDataUpLvConnect,
-						&count);
-				if (e_SC_RESULT_SUCCESS != result) {
-					SC_LOG_ErrorPrint(SC_TAG_RC, "setStartCandFormJoin error. [0x%08x] "HERE, result);
-					return (result);
+					// 候補開始リンクへ登録する
+					UINT32 count = 0;
+					result = setSplitStartCandFormJoin(aSectCtrl, targetPclInfo, targetLinkInfo, targetNetData, setLinkExDataConnect,
+							&count);
+					if (e_SC_RESULT_SUCCESS != result) {
+						SC_LOG_ErrorPrint(SC_TAG_RC, "setStartCandFormJoin error. [0x%08x] "HERE, result);
+						return (result);
+					}
+					candRoute->stLinkSize += count;
 				}
-				candRoute->stLinkSize += count;
 			}
 		}
 	}
@@ -1268,7 +1280,7 @@ static E_SC_RESULT makeSplitCand(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLE
 
 					// 探索開始地点でなければ候補INDEX張り替え
 					wkStLink = searchSplitCandStLink(candMng, pclInfo->parcelId, crntCand->linkId, RCND_GET_ORIDX(crntNet->flag));
-					if (NULL != wkStLink) {
+					if (NULL != wkStLink && RC_CAND_STLINK != wkStLink->candIdx && RC_CAND_INIT != wkStLink->candIdx) {
 						prevCand->next = wkStLink->candIdx;
 					}
 					// 開始リンク到達フラグ

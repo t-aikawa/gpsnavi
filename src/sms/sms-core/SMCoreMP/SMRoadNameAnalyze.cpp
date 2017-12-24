@@ -52,8 +52,6 @@ E_SC_RESULT SMRoadNameAnalyze::Finalize(void)
 E_SC_RESULT SMRoadNameAnalyze::InitRdNm(void)
 {
 	RDNM_HDL h_rdnm;
-	//UINT32 i;
-	//UINT32 disp_rdnm_size;
 
 	// 要素数
 	m_rdnm_cnt = GetUINT32(m_pRdNm, 4);

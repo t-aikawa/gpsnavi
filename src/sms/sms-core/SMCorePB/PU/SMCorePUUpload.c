@@ -131,8 +131,6 @@ void SC_PU_UploadProbe(pthread_msq_msg_t *msg)
 	UINT32	resLen = 0;
 	E_CONTEXT_TYPE	contextType = E_APP_BIN;
 	Char	*seqNo = NULL;
-	//UChar	*policy = NULL;
-	//Char	signature[SC_CAL_SIGNATURE_SIZE] = {};
 	SMCALPOSTPARAM	param[7] = {};
 	SMAWSINFO	aws = {};
 

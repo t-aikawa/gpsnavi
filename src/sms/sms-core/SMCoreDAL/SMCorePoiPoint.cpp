@@ -35,7 +35,6 @@ E_PAL_RESULT  SC_POI_POINT_TBL_Initialize(const char* db_path)
     int rc;
 	sqlite3 *db;
 	sqlite3_stmt *st;
-	//bool  rc_bool = false;
 	char *zErrMsg = 0;
 
 	rc = sqlite3_open(poi_db_full_name, &db);

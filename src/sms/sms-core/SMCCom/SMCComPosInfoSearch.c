@@ -248,7 +248,6 @@ E_SC_RESULT CC_PosInfoSearch_AnalyzeHttpResp(const Char *body,
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	T_CC_CMN_SMS_RESPONSE_INFO	rsp_inf;
-	//Char	apiSts[CC_CMN_XML_RES_STS_CODE_SIZE] = {};
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -624,7 +623,6 @@ void XMLCALL CC_PosInfoSearch_EndElement(void *userData, const char *name)
 void XMLCALL CC_PosInfoSearch_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	POSINFO_PARSER *parser = (POSINFO_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 	//SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

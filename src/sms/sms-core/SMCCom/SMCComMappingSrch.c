@@ -319,7 +319,6 @@ E_SC_RESULT CC_MappingSrch_CreateBody(const T_CC_CMN_SMS_API_PRM *parm,
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	Char	*keyword = NULL;
 	INT32	keywordLen = 0;
-	//INT32	len = 0;
 	INT32	num = 0;
 
 	do {
@@ -1036,7 +1035,6 @@ void XMLCALL CC_MappingSrch_EndElement(void *userData, const char *name)
 void XMLCALL CC_MappingSrch_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	MAPPINGSRCH_PARSER *parser = (MAPPINGSRCH_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

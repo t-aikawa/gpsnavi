@@ -229,7 +229,6 @@ E_SC_CAL_RESULT SC_CAL_Initialize(SMCAL *cal, const Char *logFile)
  */
 E_SC_CAL_RESULT SC_CAL_Finalize(SMCAL *cal)
 {
-	//SMCALLOG	log;
 	E_SC_CAL_RESULT	ret = e_SC_CAL_RESULT_SUCCESS;
 
 	LOG_PRINT_START(SC_CAL_TAG);
@@ -981,7 +980,6 @@ E_SC_CAL_RESULT SC_CAL_AnalyzeResponseStatus(SMCAL *cal,
 	INT32	minorVer = 0;
 	INT32	status = 0;
 	UINT32	i = 0;
-	//Bool 	isChunked = false;
 	Char	*header = NULL;
 
 	*body = EOS;
@@ -1470,7 +1468,6 @@ E_SC_CAL_RESULT SC_CAL_CreateHttpPostReq_Multipart(SMCAL *cal,
 	UChar	*base64 = NULL;
 	UINT32	len = 0;
 	UINT32	bodyLen = 0;
-	//UINT32	num = 0;
 	const Char	*url2 = NULL;
 	const Char	*str = NULL;
 
@@ -1742,10 +1739,8 @@ E_SC_CAL_RESULT SC_CAL_SendHttpReq_Multipart(SMCAL *cal,
 	UINT32	headerSize = 0;
 	UINT32	dataSize = 0;
 	UINT32	num = 0;
-	//UINT32	idx = 0;
 	UINT32	remainSize = 0;
 	UINT32	remainSendSize = 0;
-	//INT32	cnt = 0;
 	Bool	isRetry = false;
 #ifdef OUTPUT_SEND_RECV_LOG
 	FILE	*fp = NULL;
@@ -2407,7 +2402,6 @@ E_SC_CAL_RESULT SC_CAL_GetAWSSignature(SMCAL *cal, const Char *awsSecretKey, con
 	UChar	sig[SHA_DIGEST_LENGTH + 1] = {};
 	INT32	sigLen = 0;
 	UChar	*sigBase64 = NULL;
-	//INT32	i = 0;
 
 	SC_CAL_LOG_DebugPrint(&cal->log, SC_CAL_TAG, SC_CAL_LOG_START);
 

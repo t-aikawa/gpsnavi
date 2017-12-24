@@ -153,9 +153,6 @@ E_DHC_CASH_RESULT SC_DHC_GetAreaClsCode(T_DHC_AREA_CLS_CODE* pAreaClsCode)
 E_DHC_CASH_RESULT DHC_GetAreaClsCode(char* pBin, T_DHC_AREA_CLS_CODE* pAreaClsCode)
 {
 	char* pPos = NULL;
-	//char* pBkgd = NULL;
-	//INT32 i = 0;
-	//Bool find = false;
 	BIT_BINARY_HEAD binHead;
 
 

@@ -263,7 +263,6 @@ E_SC_CAL_RESULT SC_CAL_MakeDir(const Char *dirPath)
 	Char			*pPath = NULL;
 	Char			*chr = NULL;
 	INT32			cnt = 0;
-	//UINT32			errCode = 0;
 	struct stat		st = {};
 
 	if (NULL == dirPath) {

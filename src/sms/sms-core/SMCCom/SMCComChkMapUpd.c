@@ -47,10 +47,8 @@ E_SC_RESULT CC_CheckUpdate(SMCAL *smcal,
 	E_SCC_DAL_DLFLAG	dlFlg[2] = {SCC_DAL_DL_FLAG_NODOWNLOAD};
 	INT32	baseVersion[2] = {};
 	SMPROGRESSCBFNC	callbackFnc = {};
-	//Bool	versionUnmatch = false;
 	INT32	num = 0;
 	Bool	isErrComeback = errComeback;
-	//UChar	md5[CC_CMN_MD5] = {};
 	Bool	restored = false;
 	Bool	hasMap = true;
 
@@ -546,7 +544,6 @@ E_SC_RESULT CC_CheckUpdate_CheckVersion(const SCC_UPDATEDATA *upddata,
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	num = 0;
-	//Char	*chr = NULL;
 	CC_APP_VERSION	appVer = {};
 	CC_APP_VERSION	appVerS = {};
 	CC_APP_VERSION	appVerE = {};

@@ -97,7 +97,6 @@ static void receiveFMmsgForInit(pthread_msq_msg_t* aMsg) {
  */
 static void receiveFMmsgForStandby(pthread_msq_msg_t* aMsg) {
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
-	//SCRP_SEARCHSETTING *setting;
 	UINT16 setIdx = 0;
 
 	switch (aMsg->data[SC_MSG_MSG_ID]) {
@@ -159,7 +158,6 @@ static void receiveFMmsgForStandby(pthread_msq_msg_t* aMsg) {
  */
 static void receiveFMmsgForRouteCalc(pthread_msq_msg_t* aMsg) {
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
-	//SCRP_SEARCHSETTING *setting;
 	UINT16 setIdx = 0;
 
 	switch (aMsg->data[SC_MSG_MSG_ID]) {

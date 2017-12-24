@@ -22,7 +22,7 @@
 #define COST_KEY_DIR						"Dir"
 #define COST_KEY_APPLYROAD					"ApplyRoad"
 
-#if 1
+
 // 道路種別・リンク種別毎の初期速度
 UINT32 SC_ROUTE_COST_INIT_SPEED[SC_SRCHMODE_NUM][SC_ROADTYPE_NUM][SC_LINKTYPE_NUM] =
 	{
@@ -263,7 +263,7 @@ UINT8 SC_ROUTE_COST_INIT_TURN_APPLY[SC_SRCHMODE_NUM][SC_ROADTYPE_NUM][SC_ROADTYP
 		{0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1}}
 	};
-#endif
+
 
 static void SC_CONFIG_CallBackSetValue1(const Char *secName, const Char *keyName, const Char *value, void *config);
 static void SC_CONFIG_CallBackSetValue2(const Char *secName, const Char *keyName, const Char *value, void *config);
@@ -393,7 +393,6 @@ E_SC_RESULT SC_CONFIG_LoadRouteCostConfig(const Char *fileName, SC_ROUTE_COST_CO
 E_SC_RESULT SC_CONFIG_SaveRouteCostConfig(const Char *fileName, SC_ROUTE_COST_CONFIG *config)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//FILE	*fp = NULL;
 
 	SC_LOG_DebugPrint(SC_TAG_DH, SC_LOG_START);
 
@@ -474,7 +473,6 @@ void SC_CONFIG_CallBackSetValue2(const Char *secName, const Char *keyName, const
 	SC_COST_CONFIG			*configData = NULL;
 	Char					cmpName[SC_MAX_PATH]={};
 	UINT16					ilp;
-	//UINT16					idx;
 
 	// パラメータチェック
 	if (NULL == secName) {

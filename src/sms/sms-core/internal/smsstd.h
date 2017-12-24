@@ -57,9 +57,7 @@
 //#include <sqlite3/sqlite3.h>
 #include <sqlite3.h>
 #include <smsutil/smsutil.h>
-#if 0	/* aikawa 2016/04/14 暫定対策 */
 #include <tgz/untgz.h>
-#endif
 #ifdef NC_LOCATOR_INCLUDE	// AIKAWA.AIKAWA
 #include <Hilocator.h>
 #endif // NC_LOCATOR_INCLUDE

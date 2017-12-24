@@ -43,7 +43,6 @@ E_SC_RESULT MP_DRAW_Route(void)
 	SC_RP_RouteMng* p_mng = NULL;
 	UINT32 parcel_id = MP_INVALID_VALUE_32;
 	UINT32 link_id = 0;
-	//DOUBLE lat, lon;
 	FLOAT x, y;
 	FLOAT width;
 	RGBACOLOR color;
@@ -54,7 +53,6 @@ E_SC_RESULT MP_DRAW_Route(void)
 	UINT16 preY = 0;
 	UINT32 prePclId = MP_INVALID_VALUE_32;
 	Bool split_f = false;
-	//Bool level2_f = false;
 	PARCEL_INFO_t parcelInfo;
 
 	// 経路描画用バッファ

@@ -16,7 +16,6 @@
  */
 void SC_SDT_MsgAnalyze(const pthread_msq_msg_t *msg)
 {
-	//E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_SDT, SC_LOG_START);
 

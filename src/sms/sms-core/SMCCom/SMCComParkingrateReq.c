@@ -623,7 +623,6 @@ void XMLCALL CC_ParkingrateReq_EndElement(void *userData, const char *name)
 void XMLCALL CC_ParkingrateReq_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	PARKINGPARSER *parser = (PARKINGPARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

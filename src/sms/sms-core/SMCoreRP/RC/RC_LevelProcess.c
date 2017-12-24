@@ -219,7 +219,7 @@ static E_SC_RESULT calcRouteStep(SCRP_SECTCONTROLER* aSectCtrl, E_RP_RTCALCSTEP 
 				break;
 			}
 			// Dijkstra
-			result = RC_DepthFirstDijkstra(&aSectCtrl->netTable);
+			result = RC_DepthFirstDijkstra(aSectCtrl, &aSectCtrl->netTable);
 			if (e_SC_RESULT_SUCCESS != result) {
 				SC_LOG_ErrorPrint(SC_TAG_RC, "RC_Dijkstra error. [0x%08x] "HERE, result);
 				break;

@@ -146,7 +146,6 @@ void MP_DEBUG_DispWarning(void)
 	INT32	x_ofs = 0;
 	INT32	y_ofs = 0;
 	INT32	i = 0;
-	//Char	*pName = NULL;
 
 
 	MP_GL_BeginBlend();

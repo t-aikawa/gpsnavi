@@ -112,6 +112,7 @@ int sample_calc_demo_route(void)
 	if(NC_SUCCESS != ret) {
 		printf("NC_DM_GetCarState err (%d)\n", ret);
 	}
+	//printf("(%d,%d)\n",demo_icon_info[PIN_FLAG_NUM].Longititude,demo_icon_info[PIN_FLAG_NUM].Latitude);
 	// 自車位置緯度経度取得
 	st_lon = (float)carState.coord.longitude/1024.0/3600.0;
 	st_lat = (float)carState.coord.latitude/1024.0/3600.0;
@@ -133,7 +134,7 @@ int sample_calc_demo_route(void)
 	newPoint[1].rpPointType = LST_DEST;
 	newPoint[1].rpPointIndex = 1;
 
-	NC_RP_PlanSingleRoute(&newPoint[0],2);
+	NC_RP_PlanSingleRoute(&newPoint[0],2,0);
 
 	// icon
 	demo_icon_info[START_FLAG_NUM].IconID = 21;	// start flag

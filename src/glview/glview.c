@@ -25,7 +25,7 @@
 #include "glview.h"
 #include "glview_local.h"
 
-#define GLV_NAME_TEXT		"glview:version 0.0.8"
+#define GLV_NAME_TEXT		"glview:version 0.1.0"
 
 #define GLV_ON_RESHAPE	(1)
 #define GLV_ON_REDRAW	(2)

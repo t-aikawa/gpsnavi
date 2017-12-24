@@ -5,8 +5,9 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 lib_LTLIBRARIES = libnavicore.la
 
 libnavicore_la_SOURCES = \
-sms/lib/smsutil/src/smsutil.c \
-sms/lib/smsutil/src/polygon.cpp \
+sms/lib/smsutil/smsutil.c \
+sms/lib/smsutil/polygon.cpp \
+sms/lib/tgz/untgz.c \
 sms/sms-core/SMUtil/pthread_msq.c \
 sms/sms-core/SMUtil/SMZlb.c \
 sms/sms-core/SMCoreDM/RT/RT_MapLib.c \
@@ -234,6 +235,7 @@ sms/sms-core/SMCoreRP/RC/RC_AreaDiv.c \
 sms/sms-core/SMCoreRP/RC/RC_AreaDivTop.c \
 sms/sms-core/SMCoreRP/RC/RC_Entrance.c \
 sms/sms-core/SMCoreRP/RC/RC_Neighbor.c \
+sms/sms-core/SMCoreRP/RC/RC_RegModule.c \
 sms/sms-core/SMCoreRP/RC/RC_RouteCalc.c \
 sms/sms-core/SMCoreRP/RC/RC_RouteControl.c \
 sms/sms-core/SMCoreRP/RC/RC_RouteReg.c \
@@ -252,10 +254,9 @@ sms/sms-core/SMCComCMN/SMCComMem.c \
 sms/sms-core/SMCComCMN/SMCComCmn.c \
 sms/sms-core/SMCComCMN/SMCComLog.c \
 sms/sms-core/SMCComCMN/SMCComMd5.c \
-sms/lib/include/smsutil/smsutil.h \
-sms/lib/include/smsutil/polygon.h \
-sms/lib/smsutil/src/smsutil.h \
-sms/lib/smsutil/src/polygon.h \
+sms/lib/smsutil/smsutil.h \
+sms/lib/smsutil/polygon.h \
+sms/lib/tgz/untgz.h \
 sms/sms-core/SMUtil/SMZlb.h \
 sms/sms-core/SMUtil/pthread_msq.h \
 sms/sms-core/SMUtil/SMUtilInternal.h \
@@ -526,7 +527,7 @@ sms/sms-core/SMCComCMN/SMCComMd5.h
 libnavicore_la_LDFLAGS= -shared -fPIC -version-info 0:1:0
 libnavicore_la_CPPFLAGS = -fPIC \
         -I$(top_srcdir)/src/sms \
-        -I$(top_srcdir)/src/sms/lib/include \
+        -I$(top_srcdir)/src/sms/lib \
         -I$(top_srcdir)/src/sms/locator/include \
         -I$(top_srcdir)/src/sms/sms-core \
         -I$(top_srcdir)/src/sms/sms-core/include \
@@ -598,7 +599,7 @@ COPYING
 
 navi_CPPFLAGS = \
         -I$(top_srcdir)/src/sms \
-        -I$(top_srcdir)/src/sms/lib/include \
+        -I$(top_srcdir)/src/sms/lib \
         -I$(top_srcdir)/src/sms/locator/include \
         -I$(top_srcdir)/src/sms/sms-core \
         -I$(top_srcdir)/src/sms/sms-core/include \

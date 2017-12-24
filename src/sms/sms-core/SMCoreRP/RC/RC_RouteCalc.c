@@ -21,7 +21,7 @@ typedef E_SC_RESULT (*FIND_STARTNET_FUNC)(SCRP_CANDSTARTLINK* aCandStLink, SCRP_
 
 static E_SC_RESULT makeClossLinkTable(SCRP_NETCONTROLER* aNetCtrl, UINT32 aHeap, SCRC_CROSSLINKTBL* aLinkList);
 static E_SC_RESULT getNextPclConnectLink(SCRP_NETCONTROLER* aNetCtrl, SCRP_LINKINFO *aLinkInfo, SCRC_TARGETLINKINFO* aTarget);
-static E_SC_RESULT calcRouteFeatureCost(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL* aCrossLinkTbl);
+static E_SC_RESULT calcRouteFeatureCost(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL* aCrossLinkTbl);
 static E_SC_RESULT findStartNetwork(SCRP_CANDSTARTLINK* aCandStLink, SCRP_NETCONTROLER* aNetCtrl, UINT32* aLinkIdx);
 static E_SC_RESULT findStartNetworkLv1D(SCRP_CANDSTARTLINK* aCandStLink, SCRP_NETCONTROLER* aNetCtrl, UINT32* aLinkIdx);
 static E_SC_RESULT findStartNetworkLv2Top(SCRP_CANDSTARTLINK* aCandStLink, SCRP_NETCONTROLER* aNetCtrl, UINT32* aLinkIdx);
@@ -33,7 +33,7 @@ static const UINT8 mOnewayFlg[2] = { 0x02, 0x01 };
  * @brief ダイクストラ法経路探索
  * @param ネットワーク管理
  */
-E_SC_RESULT RC_DepthFirstDijkstra(SCRP_NETCONTROLER* aNetCtrl) {
+E_SC_RESULT RC_DepthFirstDijkstra(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER* aNetCtrl) {
 	SC_LOG_DebugPrint(SC_TAG_RC, SC_LOG_START);
 #if _RPLAPTIME_DIJKSTRA // ★時間計測
 	RP_SetLapTime();
@@ -62,7 +62,7 @@ E_SC_RESULT RC_DepthFirstDijkstra(SCRP_NETCONTROLER* aNetCtrl) {
 
 		// 先頭削除
 		RC_HeapDelete(aNetCtrl, 0);
-		result = calcRouteFeatureCost(aNetCtrl, &crossLinkTbl);
+		result = calcRouteFeatureCost(aSectCtrl, aNetCtrl, &crossLinkTbl);
 		if (e_SC_RESULT_SUCCESS != result) {
 			SC_LOG_ErrorPrint(SC_TAG_RC, "calcRouteFeatureCost error. [0x%08x] "HERE, result);
 			break;
@@ -205,7 +205,7 @@ static E_SC_RESULT getNextPclConnectLink(SCRP_NETCONTROLER* aNetCtrl, SCRP_LINKI
  * @memo 性能確保のためパラメタチェック等は行わない
  * @memo Uターンリンクは交差点テーブルへ格納しないように変更したため判定を取り除きました 20160108
  */
-static E_SC_RESULT calcRouteFeatureCost(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL* aCrossLinkTbl) {
+static E_SC_RESULT calcRouteFeatureCost(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL* aCrossLinkTbl) {
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	SCRC_IOCALCTBL inout = {};
@@ -238,14 +238,16 @@ static E_SC_RESULT calcRouteFeatureCost(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSL
 			continue;
 		}
 
-		//TODO 規制判定
 #if _RP_PATCH_RAIKAMUTURN /* 2015/07/31 ライカムパッチ */
 		if (RC_JudgePatchReg(aNetCtrl, inout.inLink, inout.outLink)) {
 			continue;
 		}
 #endif /* __RAIKAM_PATCH__ */
 
-		// コスト算出
+		// 規制判定
+		inout.regResult = RC_JudgeTimeReg(aSectCtrl, aNetCtrl, &inout);
+
+		// 通常コスト計算
 		result = RC_CostCalc(aNetCtrl, &inout, &costs);
 		if (e_SC_RESULT_SUCCESS != result) {
 			SC_LOG_ErrorPrint(SC_TAG_RC, "RC_CostCalc error. in/out=%d/%d [0x%08x] "HERE, inout.inLink->linkIndex, inout.outLink->linkIndex,
@@ -268,6 +270,17 @@ static E_SC_RESULT calcRouteFeatureCost(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSL
 		if (costs.totalCost < target->linkNet->costSum) {
 			target->linkNet->inLinkHist = inout.inLink->linkIndex;
 			target->linkNet->costSum = costs.totalCost;
+
+			// 規制フラグを設定し直す
+			if (RCND_REGFLAGS & target->linkNet->flag) {
+				target->linkNet->flag = RCND_MASK_REGFLG(target->linkNet->flag);
+			}
+			if (RCREG_RESULT_TIMEREGIN & inout.regResult) {
+				target->linkNet->flag |= RCND_TIMEREGIN;
+			} else if (RCREG_RESULT_TIMEREGOUT & inout.regResult) {
+				target->linkNet->flag |= RCND_TIMEREGOUT;
+			}
+
 			// ヒープ更新or追加
 			if (SCRP_HEAP_UV == target->linkNet->heap) {
 				RC_HeapInsert(aNetCtrl, target->linkIndex);
@@ -440,9 +453,7 @@ E_SC_RESULT RC_StartCandLinkSet(SCRP_NETCONTROLER *aNetCtrl, SCRP_CANDMANAGER* a
 	SCRP_CANDSTARTLINK* candStLink = NULL;
 	MAL_HDL binLink = NULL;
 	UINT32 stCandVol = 0;
-	//UINT16 tblIdx = 0;
 	UINT32 i;
-	//UINT32 e;
 	FIND_STARTNET_FUNC pFunc = NULL;
 
 	if (NULL == aNetCtrl || NULL == aCand) {
@@ -566,7 +577,6 @@ static E_SC_RESULT findStartNetwork(SCRP_CANDSTARTLINK* aCandStLink, SCRP_NETCON
 
 	SCRP_PCLINFO* pclInfo = NULL;
 	UINT32 linkIdx = 0;
-	//UINT32 linkId = 0;
 	UINT32 i;
 
 	// パーセル情報特定

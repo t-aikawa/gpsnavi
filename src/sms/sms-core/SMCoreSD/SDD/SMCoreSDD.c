@@ -60,7 +60,6 @@ E_SC_RESULT SC_SDD_Init()
  */
 void SC_SDD_Final()
 {
-	//const Char* mapPath = NULL;
 
 	SC_LOG_DebugPrint(SC_TAG_SDD, SC_LOG_START);
 
@@ -171,8 +170,6 @@ void SC_SDD_SensorDataRecv(const pthread_msq_msg_t *msg)
 	//pthread_msq_msg_t	sendMsg = {};
 	SMPHYDDATA	*smPhydData = NULL;
 	INT32		num = 0;
-	//INT32		i = 0;
-	//DBOBJECT	*db = NULL;
 
 	SC_LOG_DebugPrint(SC_TAG_SDD, SC_LOG_START);
 

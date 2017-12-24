@@ -213,8 +213,6 @@ E_SC_RESULT SC_CONFIG_GetIniFileValue(SC_CONFIG_INI_Func func, FILE *fp, void *c
 	Bool	isFoundSecName = false;					// セクション名が見つかったか
 	Char	wk[512 + 1] ={};						// ワーク領域
 	Char	secName[64 +1] ={};					// セクション名
-	//Char	*keyName = NULL;						// キー名
-	//Char	*value = NULL;							// 値
 	Char	*chr = NULL;							// 文字列ポインタ
 	const INT32	readSize = 512;						// ファイルリードサイズ
 

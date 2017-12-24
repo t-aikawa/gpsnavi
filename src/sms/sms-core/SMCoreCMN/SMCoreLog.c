@@ -342,7 +342,6 @@ E_SC_RESULT SC_LOG_MakeDir(const Char *dirPath)
 	Char			*pPath = NULL;
 	Char			*chr = NULL;
 	INT32			cnt = 0;
-	//UINT32			errCode = 0;
 	struct stat		st = {};
 
 	LOG_PRINT_START(SC_TAG_CORE);

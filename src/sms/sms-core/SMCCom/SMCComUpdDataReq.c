@@ -44,10 +44,8 @@ E_SC_RESULT CC_UpdDataReq(SMCAL *smcal,
 	Char	*filePath = NULL;
 	DBOBJECT *db = NULL;
 	INT32	num = 0;
-	//UINT32	dataNum = 0;
 	const SCC_UPDATEDATA	*updAreaData = updData;
 	SMPROGRESSCBFNC	cbFnc = {};
-	//FILE	*fp = NULL;
 	struct	stat st = {};
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -262,8 +260,6 @@ E_SC_RESULT CC_UpdBase(SMCAL *smcal,
 	INT32	num = 0;
 	INT32	idx = 0;
 	struct	stat st = {};
-	//UChar	md5Str[(CC_CMN_MD5 * 2) + 1] = {};
-	//UChar	md5[CC_CMN_MD5] = {};
 	FILE	*fp = NULL;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

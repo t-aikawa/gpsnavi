@@ -382,7 +382,6 @@ static E_SC_RESULT RG_CTL_GetClipArea(RT_POSITION_t* posi_p, UINT16 size, RT_CLI
 E_SC_RESULT RG_CTL_GetNearCross(RT_TBL_MAIN_t *guidetbl_p, RG_CTL_MAIN_t *guidectl_p)
 {
 
-	//E_SC_RESULT					ret = e_SC_RESULT_SUCCESS;
 	RT_TBL_ROUTELINK_t			*route_link_p;
 	RT_TBL_GUIDELINK_t			*guide_link_p;
 	RT_TBL_GUIDECRS_t			*guide_crs_p;

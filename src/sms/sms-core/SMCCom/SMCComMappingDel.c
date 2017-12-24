@@ -68,12 +68,10 @@ E_SC_RESULT CC_MappingDel_SendRecv(SMCAL *smcal,
 	E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
 	Char	*uri = NULL;
 	Char	*body = NULL;
-	//UINT32	bodySize = 0;
 	E_CONTEXT_TYPE	contextType = E_TEXT_XML;
 	SMCALOPT	opt = {};
 	UINT32	recvSize = 0;
 	Char	*data = NULL;
-	//INT32	status = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -445,7 +443,6 @@ void XMLCALL CC_MappingDel_EndElement(void *userData, const char *name)
 void XMLCALL CC_MappingDel_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	MAPPINGDEL_PARSER *parser = (MAPPINGDEL_PARSER*)userData;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

@@ -68,6 +68,7 @@ typedef struct _SC_SHARE_DATA {
 	SMRPPOINT				point[SC_SHARE_POINT_NUM];				// 地点情報（出発地、経由地、目的地）
 	Bool					isExistRoute;							// 現在ルートの探索結果の有無
 	Bool					isPlanning;								// 探索中かどうか
+	SMRPSEARCHTIME			routeSearchTime;						// 探索時間
 	SMRPOPTION				rpOption;								// 探索条件
 	SMRPTIPINFO				tipInfo;								// 探索詳細エラー情報
 	SMSIMULATE				simulate;								// シミュレート情報
@@ -1587,6 +1588,42 @@ E_SC_RESULT SC_SHARE_SetAllRPPlace(const SC_DH_SHARE_RPPOINT *point)
 }
 
 /**
+ * @brief 探索時間の取得
+ * @param[out] time 探索時間格納用ポインタ
+ * @return 処理結果(E_SC_RESULT)
+ */
+E_SC_RESULT SC_SHARE_GetRouteSearchTime(SC_DH_SHARE_RPSEARCHTIME *time) {
+	// パラメータチェック
+	if (NULL == time) {
+		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[time], " HERE);
+		return (e_SC_RESULT_BADPARAM);
+	}
+
+	// 探索時間の取得
+	memcpy(&time->routeSearchTime, &shareData->routeSearchTime, sizeof(SMRPSEARCHTIME));
+
+	return (e_SC_RESULT_SUCCESS);
+}
+
+/**
+ * @brief 探索時間の設定
+ * @param[in] time 探索時間
+ * @return 処理結果(E_SC_RESULT)
+ */
+E_SC_RESULT SC_SHARE_SetRouteSearchTime(const SC_DH_SHARE_RPSEARCHTIME *time) {
+	// パラメータチェック
+	if (NULL == time) {
+		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[time], " HERE);
+		return (e_SC_RESULT_BADPARAM);
+	}
+
+	// 探索時間の設定
+	memcpy(&shareData->routeSearchTime, &time->routeSearchTime, sizeof(SMRPSEARCHTIME));
+
+	return (e_SC_RESULT_SUCCESS);
+}
+
+/**
  * @brief 探索結果の有無取得
  * @param[out] exist    探索結果の有無構造体のポインタ
  * @return 処理結果(E_SC_RESULT)
@@ -2094,7 +2131,6 @@ E_SC_RESULT SC_SHARE_GetRealTimeInfo(SC_DH_SHARE_GUIDE_DATA *guide)
  */
 E_SC_RESULT SC_SHARE_SetRealTimeInfo(const SC_DH_SHARE_GUIDE_DATA *guide)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == guide) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[guide], " HERE);
@@ -3049,7 +3085,6 @@ E_SC_RESULT SC_SHARE_GetRouteCostInfo(SC_DH_SHARE_ROUTECOSTINFO *rtcost)
  */
 E_SC_RESULT SC_SHARE_SetRouteCostInfo(const SC_DH_SHARE_ROUTECOSTINFO *rtcost)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == rtcost) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[rtcost], " HERE);
@@ -3088,7 +3123,6 @@ E_SC_RESULT SC_SHARE_GetVehicleType(SC_DH_SHARE_VEHICLETYPE *vehicleType)
  */
 E_SC_RESULT SC_SHARE_SetVehicleType(const SC_DH_SHARE_VEHICLETYPE *vehicleType)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == vehicleType) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[vehicleType], " HERE);
@@ -3127,7 +3161,6 @@ E_SC_RESULT SC_SHARE_GetSaveTracksFlag(SC_DH_SHARE_SAVETRACKS *isSavetracks)
  */
 E_SC_RESULT SC_SHARE_SetSaveTracksFlag(const SC_DH_SHARE_SAVETRACKS *isSavetracks)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == isSavetracks) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[isSavetracks], " HERE);
@@ -3166,7 +3199,6 @@ E_SC_RESULT SC_SHARE_GetDebugInfoOnSurface(SC_DH_SHARE_ONSURFACE *isOnSurface)
  */
 E_SC_RESULT SC_SHARE_SetDebugInfoOnSurface(const SC_DH_SHARE_ONSURFACE *isOnSurface)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == isOnSurface) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[isOnSurface], " HERE);
@@ -3205,7 +3237,6 @@ E_SC_RESULT SC_SHARE_GetEchoFlag(SC_DH_SHARE_ECHO *isEcho)
  */
 E_SC_RESULT SC_SHARE_SetEchoFlag(const SC_DH_SHARE_ECHO *isEcho)
 {
-	//INT32	num = 0;
 	// パラメータチェック
 	if (NULL == isEcho) {
 		SC_LOG_ErrorPrint(SC_TAG_SHARE, "param error[isEcho], " HERE);
@@ -3516,8 +3547,6 @@ E_SC_RESULT SC_SHARE_GetTraffic(SC_DH_SHARE_TRAFFIC *traffic)
  */
 static E_SC_RESULT SC_SHARE_MemRestor(SC_SHARE_DATA* aBin)
 {
-	//INT32 i;
-	//INT32 l;
 	SC_LOG_DebugPrint(SC_TAG_SHARE, SC_LOG_START);
 
 	// チェック
@@ -3617,7 +3646,6 @@ E_SC_RESULT SC_RouteBackup() {
 	SC_ROUTEBACKUP route_backup = {};
 	Char dirPath[SC_MAX_PATH] = {};
 	Char* rootPath = NULL;
-	//UINT8* buf;
 	INT32 bufSize = 0;
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 
@@ -3673,7 +3701,6 @@ E_SC_RESULT SC_RouteBackup() {
 E_SC_RESULT SC_RouteBackupDelete() {
 
 	Char dirPath[SC_MAX_PATH] = {};
-	//SC_ROUTEBACKUP route_backup = {};
 	Char* rootPath = NULL;
 	INT32 readRet = 0;
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
@@ -3717,7 +3744,6 @@ E_SC_RESULT SC_GetRouteBackup(SMROUTEBACKUP* backup) {
 	SC_ROUTEBACKUP route_backup = {};
 	Char* rootPath = NULL;
 	INT32 readRet = 0;
-	//INT32 result = 0;
 	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 
 	do {

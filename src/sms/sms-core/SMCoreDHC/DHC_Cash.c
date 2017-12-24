@@ -572,11 +572,9 @@ E_DHC_CASH_RESULT SC_DHC_MapRead(T_DHC_REQ_PARCEL *aReqPcl, T_DHC_RES_DATA *aRes
 {
 	T_DHC_REQ_INFO aReq;
 	T_DHC_READ* read;
-	//T_DHC_READ_LIST addList;
 	T_DHC_READ_LIST* readList;
 	T_DHC_CASH_LIST* cashList;
 	T_DHC_BINARY* binInfo;
-	//UINT8* result;
 	INT32 ret;
 	void** outAddr;
 	T_DHC_REQ_PARCEL_INFO workReqInfo;
@@ -878,8 +876,6 @@ T_DHC_READ_LIST* DHC_ReadListSearch(T_DHC_REQ_INFO* aReq)
 {
 	T_DHC_READ_LIST* read = m_HdlDataMng.readData.firstRead;
 	T_DHC_READ_LIST* nextRead = read;
-	//T_DHC_BINARY* binInfo;
-	//UINT32 i;
 
 	while (nextRead) {
 		read = nextRead;
@@ -995,8 +991,6 @@ INT32 DHC_UseCashListInsert(T_DHC_REQ_INFO* aReq, T_DHC_READ_LIST* aRead)
 {
 	T_DHC_CASH* cash = &(m_HdlDataMng.cashData);
 	T_DHC_CASH_LIST* newUse;
-	//T_DHC_CASH_LIST* prev;
-	//T_DHC_CASH_LIST* next;
 	T_DHC_BINARY* binInfo;
 	INT32 ret = 0;
 
@@ -1372,7 +1366,6 @@ E_DHC_CASH_RESULT DHC_GetPclDataBin(T_DHC_REQ_PARCEL_INFO* aReqInfo, T_DHC_BINAR
 E_DHC_CASH_RESULT SC_DHC_GetRoadDensity(T_DHC_ROAD_DENSITY* aDenInfo)
 {
 
-	//void *data = NULL;
 	T_DHC_REQ_PARCEL mapReqPcl;
 	T_DHC_RES_DATA mapResData = {};
 	T_DHC_ROAD_DENSITY_DATA* denData;

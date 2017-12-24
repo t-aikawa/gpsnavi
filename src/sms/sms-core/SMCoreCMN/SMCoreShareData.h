@@ -159,6 +159,11 @@ typedef struct _SC_DH_SHARE_RPPOINT {
 	SMRPPOINT				point[SC_CORE_RP_PLACE_MAX];	// [I/O]地点情報（出発地、経由地、目的地）
 } SC_DH_SHARE_RPPOINT;
 
+// 探索時間
+typedef struct _SC_DH_SHARE_RPSEARCHTIME {
+	SMRPSEARCHTIME			routeSearchTime;	// [I/O]探索時間
+} SC_DH_SHARE_RPSEARCHTIME;
+
 // 探索結果の有無
 typedef struct _SC_DH_SHARE_EXISTROUTE {
 	Bool					isExistRoute;	// [I/O]探索結果の有無

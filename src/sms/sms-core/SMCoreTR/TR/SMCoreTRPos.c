@@ -29,7 +29,6 @@ E_SC_RESULT SC_TR_GetCurrentPos(const UINT16 user, DOUBLE *pLat, DOUBLE *pLon)
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	SMCARSTATE	carState = {};
 	SMGEOCOORD	geoCoord = {};
-	//UINT32		parcelId = 0;
 	DOUBLE		lat = 0.0;
 	DOUBLE		lon = 0.0;
 	INT32		maps = 1;

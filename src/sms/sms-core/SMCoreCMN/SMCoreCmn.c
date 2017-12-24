@@ -187,7 +187,6 @@ E_SC_RESULT SC_DestroySemaphore(SC_SEMAPHORE *sem, Char *sem_name)
 #else
 E_SC_RESULT SC_DestroySemaphore(SC_SEMAPHORE *sem)
 {
-	//INT32 ret = 0;
 
 	// パラメータチェック
 	if (NULL == sem) {
@@ -452,7 +451,6 @@ E_SC_RESULT SC_MakeDir(const Char *dirPath)
 	Char			*pPath = NULL;
 	Char			*chr = NULL;
 	INT32			cnt = 0;
-	//UINT32			errCode = 0;
 	struct stat		st = {};
 
 	if ((NULL == dirPath) || (EOS == *dirPath)) {

@@ -58,6 +58,7 @@
 #define RCND_EXCLUDELINK			(0x0800)			/* 探索対象外フラグ */
 #define RCND_UPLEVEL				(0x1000)			/* 上位接続フラグ */
 #define RCND_DOWNLEVEL				(0x2000)			/* 下位接続フラグ */
+#define RCND_REGFLAGS				(RCND_TIMEREGIN | RCND_TIMEREGOUT | RCND_SEASONREGIN)
 
 #define RCND_GET_ORIDX(flag)				(flag & RCND_LINKOR)			/* 方向フラグ取得 */
 #define RCND_GET_CONNECTLINK(flag)			(flag & RCND_CONNECTLINK)		/* 接続情報フラグ取得 */
@@ -72,6 +73,7 @@
 #define RCND_GET_DOWNLEVELFLG(flag)			(flag & RCND_DOWNLEVEL)			/* 下位レベル接続フラグ */
 #define RCND_GET_CANDFLGS(flag)				(flag & (RCND_DESTLINK | RCND_CANDJOIN | RCND_CANDSPLIT | RCND_AREAENDLINK))	/* 候補系フラグ取得 */
 #define RCND_MASK_STARTFLG(flag)			(flag & ~RCND_STARTLINK)		/* 開始リンクフラグ以外マスク */
+#define RCND_MASK_REGFLG(flag)				(flag & ~(RCND_REGFLAGS))		/* 規制フラグ以外マスク */
 
 // SCRP_NETDATA：costSum 高速道路通過フラグ TODO
 #define RCND_GET_COST(cost)					(cost & 0x7FFFFFFF)				/* コスト取得 */
@@ -225,9 +227,8 @@ typedef struct _SCRP_NETDATA {
 // 探索情報テーブル：リンク
 typedef struct _SCRP_LINKINFO {
 	UINT16 detaIndex;					// データINDEX(0始まり)
-#if 0 // TODO 追加予定
-	UINT16 regOfs;						// 規制情報オフセット
-#endif
+	UINT8 reserve[2];					// padding
+	UINT32 regOfs;						// 規制情報オフセット
 	SCRP_NETDATA linkNet[2];			// リンク情報([0]順 [1]逆)
 } SCRP_LINKINFO;
 
@@ -237,6 +238,7 @@ typedef struct _SCRP_PCLINFO {
 	UINT8* mapNetworkLinkBin;			// 地図アドレス：道路->リンク先頭
 	UINT8* mapNetworkCnctBin;			// 地図アドレス：道路->接続先頭
 	UINT8* mapNetworkLinkExBin;			// 地図アドレス：道路->リンク拡張先頭
+	UINT8* mapNetworkRegBin;			// 地図アドレス：道路->規制レコード先頭
 	UINT16 index;						// 自身Index
 	UINT32 parcelId;					// パーセルID
 	UINT32 linkIdx;						// リンク情報テーブルインデックス
@@ -246,6 +248,54 @@ typedef struct _SCRP_PCLINFO {
 	UINT8 areaJoin;						// 分割情報
 	UINT8 flag;							// フラグ情報
 } SCRP_PCLINFO;
+
+// 推奨経路規制当て込み用
+typedef struct _RCREG_ROUTEREGLIST {
+	UINT32 regOffset;
+} RCREG_ROUTEREGLIST;
+
+// 規制情報分解用テーブル
+typedef struct _RCREG_REGRECODINFO {
+	MAL_HDL pRegTop;					// 規制先頭
+	MAL_HDL pRegDataTop;				// 規制データ先頭
+	UINT32 dataSize;					// データサイズ(4byte単位)
+	UINT32 regSize;						// 規制サイズ(4byte単位)
+	UINT32 regId;						// リンク規制識別ID
+	UINT32 sameLinkOfsVol;				// 同一リンク規制リスト数
+} RCREG_REGRECODINFO;
+
+// 規制情報分解用テーブル
+typedef struct _RCREG_REGDATAINFO {
+	UINT32 linkVol1;					// 退出リンク数
+	UINT32 linkVol2;					// 侵入リンク数
+	UINT32 codeVol;						// コード数
+	MAL_HDL pCode;						// コード先頭
+	MAL_HDL pLink;						// リンク先頭
+	MAL_HDL pIndex;						// インデックス先頭
+	UINT32 linkSize;					// リンクサイズ
+	UINT32 indexSize;					// リンクインデックスサイズ
+	UINT8 code[255];
+	UINT32 codeSize;					// コードサイズ
+} RCREG_REGDATAINFO;
+
+// 規制時間分解用テーブル
+typedef struct _RCREG_TIME {
+	Bool onlyCode;						// コード内容1ブロック目のみの場合true
+	UINT8 code;							// 規制コード
+	UINT8 id;							// 規制ID
+	UINT16 pass;						// 通過
+	UINT16 flag;						// 規制ありなしフラグ
+	UINT16 week;						// 週
+	UINT8 stMonth;						// 開始月
+	UINT8 stDay;						// 開始日
+	UINT8 edMonth;						// 終了月
+	UINT8 edDay;						// 終了日
+	UINT8 stHour;						// 開始時
+	UINT8 stMinute;						// 開始分
+	UINT8 edHour;						// 終了時
+	UINT8 edMinute;						// 終了分
+} RCREG_TIME;
+
 
 /* 20151215 masu
  * 旧エリア情報生成処理を使用する場合の為の構造体定義です。

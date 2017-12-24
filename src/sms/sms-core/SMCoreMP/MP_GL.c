@@ -796,7 +796,6 @@ void MP_GL_DeleteTextures(UINT32 *pTextureID)
  */
 void MP_GL_DrawTextures(UINT32 pTextureID, const T_POINT *pSquares)
 {
-#if 1
 	static T_POINT textureCoords[4] = {
 		0.0f, 0.0f,
 		1.0f, 0.0f,
@@ -822,7 +821,6 @@ void MP_GL_DrawTextures(UINT32 pTextureID, const T_POINT *pSquares)
 	glDisable(GL_TEXTURE_2D);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#endif
 }
 
 /**

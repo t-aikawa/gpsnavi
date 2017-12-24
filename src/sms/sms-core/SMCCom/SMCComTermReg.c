@@ -62,7 +62,6 @@ E_SC_RESULT CC_TermReg_SendRecv(SMCAL* smcal,
 {
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;		// 戻り値(処理結果)
 	E_SC_CAL_RESULT	cal_ret = CC_CMN_RESULT_SMCAL_OK;	// HTTPデータ系処理結果
-	//INT32 resp_sz = 0;							// httpレスポンスサイズ(ヘッダ含む)
 	Char* p_body = NULL;					// httpレスポンスボディ部へのポインタ
 	INT32 body_sz = 0;						// httpレスポンスボディ部サイズ
 	E_CONTEXT_TYPE contextType = E_TEXT_XML;// Content-Type

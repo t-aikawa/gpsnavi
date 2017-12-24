@@ -233,7 +233,7 @@ UINT32 getNewNetLinkIndex(UINT32 aPclIdx, UINT32 aLinkIdx, UINT32 aOR);
 /**
  * RC_RouteCalc
  */
-E_SC_RESULT RC_DepthFirstDijkstra(SCRP_NETCONTROLER *aNetCtrl);
+E_SC_RESULT RC_DepthFirstDijkstra(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER *aNetCtrl);
 E_SC_RESULT RC_SetStartLink(SCRP_SECTCONTROLER* aSectCtrl, E_RP_RTCALCSTEP aStep, UINT16 aSplit);
 E_SC_RESULT RC_StartNbrLinkSet(SCRP_NETCONTROLER *aNetCtrl, SCRP_NEIGHBORINFO* aNeighbor);
 E_SC_RESULT RC_StartCandLinkSet(SCRP_NETCONTROLER *aNetCtrl, SCRP_CANDMANAGER* aCand, E_RP_RTCALCSTEP aStep);
@@ -267,8 +267,7 @@ Bool RC_CheckSplitRoute(SC_RP_RouteMng*);
  * RC_RouteReg
  */
 E_SC_RESULT RC_RegJudgeFuncSet(SCRP_SEARCHSETTING* aSetting);
-UINT16 RC_JudgeTimeReg(SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL* aInoutData);
-UINT16 RC_JudgeSeasonReg(SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL* aInoutData);
+UINT32 RC_JudgeTimeReg(SCRP_SECTCONTROLER* aSectCtrl, SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL* aInoutData);
 Bool RC_JudgeOkinawaUTurn(SCRP_NETCONTROLER* aNetCtrl, SCRC_TARGETLINKINFO *aInLink, SCRC_TARGETLINKINFO *aOutLink);
 Bool RC_JudgePatchReg(SCRP_NETCONTROLER* aNetCtrl, SCRC_TARGETLINKINFO *aInLink, SCRC_TARGETLINKINFO *aOutLink);
 
@@ -358,4 +357,16 @@ void RPDBG_CheckIntegrityNetHeap(SCRP_NETCONTROLER *aNetCtrl);
 void RPDBG_ShowCalcCost(UINT32* base, UINT32* unit, UINT32* angle, UINT32* aapply);
 void RPDBG_ShowTargetCalcNowLink(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL* aCrossLinkTbl, UINT32 aParcelId, UINT32 aLinkId,
 		UINT32 aIdx, UINT32 aNewCost, SCRC_RESULTCOSTS* aCost);
+void RPDBG_DumpRegulationTime(RCREG_TIME* aTimeReg);
+void RPDBG_DumpRegulationLinks(RCREG_REGDATAINFO* aRegInfo, UINT32 baseParcel);
+
+/**
+ * RP_RouteReg.c
+ */
+E_SC_RESULT RC_RegBuildRegInfo(MAL_HDL aRegTop, RCREG_REGDATAINFO *aRegInfo);
+E_SC_RESULT RC_RegSetRegOffset(SCRP_SECTCONTROLER *aSectCtrl, SCRP_NETCONTROLER *aNetCtrl);
+E_SC_RESULT RC_RegRouteMakeRegOfsList(SC_RP_RouteMng* aRouteMng, UINT32 aPclIndex, MAL_HDL aRoadReg, RCREG_ROUTEREGLIST *aRegOfsList);
+E_SC_RESULT RP_RegRouteBuildLinkRegIndex(SC_RP_RouteMng* aRouteMng);
+UINT32 RC_RegJudgeRegulationResult(SMRPSEARCHTIME *aSearchTime, RCREG_REGDATAINFO* aRegInfo);
+
 #endif /* SMCORERPINTERNALAPI_H_ */

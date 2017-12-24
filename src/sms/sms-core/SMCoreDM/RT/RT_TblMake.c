@@ -145,9 +145,7 @@ E_SC_RESULT RT_TBL_SetGuideLink(RT_TBL_MAIN_t *guidetbl_p, UINT32	make_dist)
 	T_DHC_REQ_PARCEL 			mapReqPcl;
 	RT_LINK_t					link_info;
 	UINT32						total_dist = 0;
-	//UINT16						route_point_no;
 	UINT16						ilp;
-	//UINT16						jlp;
 
 	SC_LOG_DebugPrint(SC_TAG_RT, SC_LOG_START);
 
@@ -867,7 +865,6 @@ static UINT16 RT_TBL_GetGuideDir(RT_CROSSINFO_t *crs_p)
  */
 static E_SC_RESULT RT_TBL_RevCrossInfo(RT_TBL_MAIN_t *guidetbl_p, RT_TBL_ROUTELINK_t *route_link_p, RT_LINK_t *link_p, RT_CROSSINFO_t *crs_p)
 {
-	//E_SC_RESULT					ret = e_SC_RESULT_SUCCESS;
 	RT_LINKINFO_t				linkinfo;
 	INT16						ilp;
 	INT16						jlp;
@@ -1170,7 +1167,6 @@ static E_SC_RESULT RT_TBL_SetRaExitNo(RT_TBL_MAIN_t *guidetbl_p)
 	RT_TBL_GUIDELINK_t			*guide_link_p;
 	RT_TBL_GUIDECRS_t			*guide_crs_p;
 	INT16						ilp;
-	//INT16						jlp;
 	UINT16						srch_no = ALLF16;
 	UINT8						exit_no = 0;
 

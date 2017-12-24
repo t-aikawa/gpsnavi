@@ -18,6 +18,7 @@ typedef UINT8* MAL_HDL;
 #define MA_ALLF16 0xFFFF
 #define MA_ALLF8 0xFF
 
+#define MAL_LINKPNTID						0x00FFFFFF		// リンクIDパーマネントマスク
 /*-------------------------------------------------------------------
  * 定数定義
  *-------------------------------------------------------------------*/
@@ -341,6 +342,9 @@ typedef UINT8* MAL_HDL;
 /* 接続ID索引レコード
  * ROAD_NETWORK#BINARY -> #INDEX_CONNECTIONID_RECORD */
 #define SC_MA_A_NWBIN_GET_IDXCNCT(p)		((p) + _RNET_BINARY + (SC_MA_D_NWBIN_GET_IDXCNCT_OFS(p) * 4))
+/* 規制レコード
+ * ROAD_NETWORK#BINARY -> #REGULATION_THE_LINKS_RECORD */
+#define SC_MA_A_NWBIN_GET_REGULATION(p)		((p) + _RNET_BINARY + (SC_MA_D_NWBIN_GET_LINKREG_OFS(p) * 4))
 
 // ROAD_NETWORK#BINARY#NETWORK_LINK_RECORD  レコードサイズ
 #define SC_MA_D_NWBIN_GET_LINK_RECORDSIZE(p)	(read4byte(((SC_MA_A_NWBIN_GET_NWLINK(p)) + _LINK_DATA_SIZE)))
@@ -452,6 +456,14 @@ typedef UINT8* MAL_HDL;
 #define SC_MA_D_NWRCD_IDXCNCT_GET_SIZE(p)		(read4byte((p) + 0))		// 索引レコードサイズ
 #define SC_MA_D_NWRCD_IDXCNCT_GET_VOL(p)		(read4byte((p) + 4))		// 索引レコード数
 #define SC_MA_A_NWRCD_IDXCNCT_GET_RECORD(p)		((p) + 8)					// 索引レコード先頭
+
+// 規制レコード ROAD_NETWORK#BINARY#REGULATION_THE_LINKS_RECORD#REGULATION
+#define SC_MA_A_NWRCD_REG_GET_RECOD(p, ofs)		((p) + (ofs) * 4)			// 規制レコード取得（オフセット指定）
+#define SC_MA_A_NWRCD_REG_GET_REG(p)			((p) + 12)					// 規制繰り返し先頭取得
+#define SC_MA_D_NWRCD_REG_GET_REGID(p)			(read4byte((p) + 4))		// 規制ID取得
+#define SC_MA_D_NWRCD_REG_GET_DATASIZE(p)		(read4byte(p) * 4)			// データサイズ取得
+#define SC_MA_D_NWRCD_REG_GET_REGSIZE(p)		(read4byte((p) + 8) * 4)	// 規制サイズ取得
+#define SC_MA_D_NWRCD_REG_GET_SAMEOFSVOL(p)		((SC_MA_D_NWRCD_REG_GET_DATASIZE(p) - SC_MA_D_NWRCD_REG_GET_REGSIZE(p) - 12) / 4)	// 同一規制リンクリスト数取得
 
 // ##ID
 #define SC_MA_D_NWID_GET_SUB_DELETE(a)			(((a) >> 31) & 0x00000001)

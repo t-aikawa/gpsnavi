@@ -1479,8 +1479,6 @@ E_SC_RESULT SCC_DAL_GetDLBaseVersion(DBOBJECT *db,
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	sqliteRet = SQLITE_OK;
 	sqlite3_stmt	*stmt = NULL;
-	//INT32	size = 0;
-	//INT32	num = 0;
 	INT32	flg = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -1715,8 +1713,6 @@ E_SC_RESULT SCC_DAL_GetDLAreaMap(DBOBJECT *db,
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	sqliteRet = SQLITE_OK;
 	sqlite3_stmt	*stmt = NULL;
-	//INT32	size = 0;
-	//INT32	num = 0;
 	INT32	flg = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -2087,9 +2083,6 @@ E_SC_RESULT SCC_DAL_GetDLSys(DBOBJECT *db, const Char *kind, INT32 *version)
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	sqliteRet = SQLITE_OK;
 	sqlite3_stmt	*stmt = NULL;
-	//INT32	size = 0;
-	//INT32	num = 0;
-	//INT32	flg = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -2429,9 +2422,6 @@ E_SC_RESULT SCC_DAL_GetDLCustom(DBOBJECT *db, const Char *kind, const Char *setn
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	sqliteRet = SQLITE_OK;
 	sqlite3_stmt	*stmt = NULL;
-	//INT32	size = 0;
-	//INT32	num = 0;
-	//INT32	flg = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -2626,7 +2616,6 @@ E_SC_RESULT SCC_DAL_UpdateAreaCls(DBOBJECT *db, const Char *filePath, Bool trans
 	INT32	num = 0;
 	INT32	updClmNum = 0;
 	INT32	baseVersion = 0;
-	//INT32	idx = 0;
 	Char	keyList[SCC_DAL_TABLE_CLM_NUM_AREA_CLS] = {
 					'1', '1', '1', '1', '1', '1', '1', '0', '1', '0', '0', '0', '0', '0', '1', '0'
 	};

@@ -228,6 +228,12 @@ E_SC_RESULT RC_CostCalc(SCRP_NETCONTROLER* aNetTab, SCRC_IOCALCTBL* aInOut, SCRC
  */
 E_SC_RESULT RC_CostCalc(SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL* aInOut, SCRC_RESULTCOSTS* aCosts) {
 
+	// 規制内の場合ペナルティコストをかけて終了
+	if ((RCREG_RESULT_REG | RCREG_RESULT_TIMEREGIN) & aInOut->regResult) {
+		aCosts->totalCost = RCREG_PENALTY_COST;
+		return (e_SC_RESULT_SUCCESS);
+	}
+
 	aCosts->advanceCost = 0;
 	aCosts->crossCost = 0;
 	aCosts->travelCost = 0;
@@ -439,11 +445,11 @@ static E_SC_RESULT calcNormalPenalty(SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL
  */
 static E_SC_RESULT calcRegulationCost(SCRP_NETCONTROLER* aNetCtrl, SCRC_IOCALCTBL* aInOut, SCRC_RESULTCOSTS* aCosts) {
 	// 時間規制内
-	if (aInOut->reg.b_flag.timeRegIn) {
+	if (aInOut->regResult) {
 		aCosts->travelCost += mCostData.timeRegCost;
 	}
 	// 季節規制内
-	if (aInOut->reg.b_flag.seasonRegIn) {
+	if (aInOut->regResult) {
 		aCosts->travelCost += mCostData.seasonRegCost;
 	}
 	return (e_SC_RESULT_SUCCESS);

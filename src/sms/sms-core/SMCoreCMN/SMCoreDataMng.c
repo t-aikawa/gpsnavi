@@ -344,7 +344,6 @@ E_SC_RESULT SC_DM_MapRead_MsgRes(pthread_msq_msg_t *rcvMsg)
 	UINT32 i;
 	UINT32 e;
 	UINT32 user;
-	//UINT32 msgCnt = 0;
 	UINT32 cnt = 0;
 	Bool cancel = false;
 

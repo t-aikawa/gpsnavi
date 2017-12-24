@@ -59,7 +59,6 @@ E_SC_RESULT CC_MakeDir(const Char *dirPath)
 	Char			*pPath = NULL;
 	Char			*chr = NULL;
 	INT32			cnt = 0;
-	//UINT32			errCode = 0;
 	struct stat		st = {};
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -393,7 +392,6 @@ E_SC_RESULT SCC_CreateSemaphore(SCC_SEMAPHORE *sem, UINT32 val)
  */
 E_SC_RESULT SCC_DestroySemaphore(SCC_SEMAPHORE *sem)
 {
-	//INT32 ret = 0;
 
 	// パラメータチェック
 	if (CC_ISNULL(sem)) {
@@ -1356,7 +1354,6 @@ E_SC_RESULT CC_CmnDL_CheckFile(const Char *filePath, const UChar *md5, UINT32 fi
 	UChar	*data = NULL;
 	FILE	*fp = NULL;
 	INT32	readSize = 0;
-	//Bool	isError = false;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -1466,8 +1463,6 @@ E_SC_RESULT CC_CmnDL_CheckFile(const Char *filePath, const UChar *md5, UINT32 fi
 E_SC_RESULT CC_UnTgz(const Char *filePath, const Char *dstPath, const SMPROGRESSCBFNC *cbFnc)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-
-#if 0 /* aikawa 2016/04/14 暫定 */
 	TAR_CANCEL_FNC	cancel = (TAR_CANCEL_FNC)cbFnc->cancel;
 	TAR_PROGRESS_FNC	progress = (TAR_PROGRESS_FNC)cbFnc->progress;
 
@@ -1478,6 +1473,7 @@ E_SC_RESULT CC_UnTgz(const Char *filePath, const Char *dstPath, const SMPROGRESS
 			ret = e_SC_RESULT_BADPARAM;
 			break;
 		}
+
 		// tar.gzファイル解凍
 		if (0 != tar2(filePath, dstPath, cancel, progress)) {
 			if (CC_ISCANCEL()) {
@@ -1490,7 +1486,7 @@ E_SC_RESULT CC_UnTgz(const Char *filePath, const Char *dstPath, const SMPROGRESS
 			break;
 		}
 	} while (0);
-#endif
+
 	return (ret);
 }
 

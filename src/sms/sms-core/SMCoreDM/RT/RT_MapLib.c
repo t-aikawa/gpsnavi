@@ -378,13 +378,11 @@ static E_SC_RESULT RT_MAP_GetCrossLink(RT_MAPREQ_t *reqtbl_p, RT_LINK_t *in_link
  */
 static E_SC_RESULT 	RT_MAP_GetCrossNodeAttr(RT_MAPREQ_t *reqtbl_p, RT_LINK_t *link_p, RT_CROSSINFO_t *crs_p)
 {
-	//E_SC_RESULT					ret;
 	RT_MAPDATA_t				*maptbl_p;
 	UINT8						*guide_head_addr;
 	UINT8						*guide_addr;
 	UINT8						*crsname_addr;
 	UINT8						*addr;
-	//UINT8						*addr2;
 	UINT32						offset;
 	UINT16						ofs;
 	UINT16						ilp;

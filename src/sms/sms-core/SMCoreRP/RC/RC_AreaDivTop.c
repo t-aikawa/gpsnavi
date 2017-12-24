@@ -216,8 +216,6 @@ static E_SC_RESULT setPclStateTbl(INT16 topLevel,SCRP_LEVELTBL *aLeveltbl,RC_BAS
 	UINT16 pclIdx = 0;
 
 	//収納範囲
-	//INT32 xRangeMin = 0;
-	//INT32 yRangeMin = 0;
 	INT32 xRangeMax = 0;
 	INT32 yRangeMax = 0;
 
@@ -457,8 +455,6 @@ static E_SC_RESULT setPclStateTbl(INT16 topLevel,SCRP_LEVELTBL *aLeveltbl,RC_BAS
 			//レベル1
 			//領域確保のため上限を定める
 			UINT16 totalPclVolMax = baseAreaTopLvInf->totalPclVolTopLv * 2;	//Lv1すべての枚数の2倍
-			//UINT16 divVol = topDivVol;	//分割数=分割処理終了数
-			//UINT16 pclVol = baseAreaTopLvInf->areaTopLv.pclRect.xSize* baseAreaTopLvInf->areaTopLv.pclRect.ySize;
 
 			//ボリュームを0に初期化
 			aLeveltbl->divInfoVol = 0;
@@ -610,11 +606,8 @@ static E_SC_RESULT RC_AreaDivTopSetArea(INT16 topLevel, RC_AREASTATEINFO *before
 	}
 
 	E_SC_RESULT result = e_SC_RESULT_FAIL;
-	//INT16 intResult = 0;
 	INT16 o_ret = 0;			//
 	INT16 d_ret = 0;			//
-	//INT32 altX = 0;				// 非分割エリア内の相対位置
-	//INT32 altY = 0;				// 非分割エリア内の相対位置
 	INT32 absAlterPosX = 0;		// Ｘ方向の相対位置（abs）
 	INT32 absAlterPosY = 0;		// Ｙ方向の相対位置（abs）
 
@@ -3152,6 +3145,7 @@ static E_SC_RESULT checkAreaDownload(T_DHC_DOWNLOAD_AREA* downloadarea_ptr, T_DH
 	if (tbl_no < 0) {
 		return (e_SC_RESULT_FAIL);
 	}
+
 	//	ダウンロードされているかチェックする。
 	INT32 k;
 	for (k = 0; k < 8; k++) {

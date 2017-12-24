@@ -29,7 +29,6 @@ SC_DA_RESULT SC_DA_GetSystemInformationDataSize(sqlite3* sqliteObj, INT32 *pBinS
 
 	SC_DA_RESULT dal_res = SC_DA_RES_SUCCESS;
 	INT32 sqlite_res = SQLITE_OK;
-	//char query[SC_DA_SQL_LEN]; //SQL文
 	sqlite3_stmt *stmt;
 
 	do {
@@ -145,7 +144,6 @@ SC_DA_RESULT SC_DA_LoadSystemInfo(sqlite3* sqliteObj, char* query, T_DAL_DBSYSTE
 	INT32 sqliteRet = SQLITE_ERROR;
 	INT32 size = 0;
 	INT32 bufSize = 0;
-	//INT32 i = 0;
 
 	if ((NULL == query) || (NULL == sqliteObj)) {
 #ifdef	ANDROID

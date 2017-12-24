@@ -616,6 +616,7 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	SC_DH_SHARE_RPPOINT point = {};
+	SMRPSEARCHTIME searchTime = {};
 	INT32 num = 0;
 	DOUBLE x;
 	DOUBLE y;
@@ -642,6 +643,14 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 			aSetting->useLevel = RP_MAX_LEVEL;
 		}
 
+		// 探索日時取得
+		result = SC_MNG_GetSearchTime(&searchTime);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_DH_GetShareData error. [0x%08x] " HERE, result);
+			break;
+		}
+		RP_Memcpy(&aSetting->routeSearchTime, &searchTime, sizeof(SMRPSEARCHTIME));
+
 		// 車両情報取得
 		result = SC_MNG_GetCarState(&aSetting->car, e_SC_CARLOCATION_NOW);
 		if (e_SC_RESULT_SUCCESS != result) {
@@ -656,10 +665,14 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 			break;
 		}
 
-		// 時間規制
-		aSetting->b_setting.timeReg = RP_SETTING_TIMEREG_OFF;
-		// 季節規制
-		aSetting->b_setting.seasonReg = RP_SETTING_SEASONREG_OFF;
+		// 規制考慮設定（季節規制は時間規制の設定に追従させる）
+		if (RTU_NONE == aSetting->option.regulationType) {
+			aSetting->b_setting.timeReg = RP_SETTING_TIMEREG_OFF;
+			aSetting->b_setting.seasonReg = RP_SETTING_SEASONREG_OFF;
+		} else {
+			aSetting->b_setting.timeReg = RP_SETTING_TIMEREG_ON;
+			aSetting->b_setting.seasonReg = RP_SETTING_SEASONREG_ON;
+		}
 		// フェリー
 		aSetting->b_setting.ferry = RP_SETTING_FERRY_OFF;
 		// 有料道路
@@ -685,7 +698,7 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 		for (num = 0; num < point.pointNum; num++) {
 			lat = (DOUBLE) point.point[num].coord.latitude / 1024;
 			lon = (DOUBLE) point.point[num].coord.longitude / 1024;
-			MESHC_ChgLatLonToParcelID(lat, lon, 1, &aSetting->rpPoint[num].parcelId, &x, &y);
+			SC_Lib_ChangeTitude2PID(lat, lon, 1, &aSetting->rpPoint[num].parcelId, &x, &y);
 			aSetting->rpPoint[num].x = (UINT16) x;
 			aSetting->rpPoint[num].y = (UINT16) y;
 		}
@@ -699,6 +712,25 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 			}
 		}
 	} while (0);
+#if 0 // 探索設定値ダンプ
+	{
+		SC_LOG_DebugPrint(SC_TAG_RM, "RegulationType  : %4d", aSetting->option.regulationType);
+		SC_LOG_DebugPrint(SC_TAG_RM, "TimeReg         : %4d", aSetting->b_setting.timeReg);
+		SC_LOG_DebugPrint(SC_TAG_RM, "SeasonReg       : %4d", aSetting->b_setting.seasonReg);
+		SC_LOG_DebugPrint(SC_TAG_RM, "年  : %4d", aSetting->routeSearchTime.year);
+		SC_LOG_DebugPrint(SC_TAG_RM, "月  : %4d", aSetting->routeSearchTime.mon);
+		SC_LOG_DebugPrint(SC_TAG_RM, "日  : %4d", aSetting->routeSearchTime.mday);
+		SC_LOG_DebugPrint(SC_TAG_RM, "曜日: %4d", aSetting->routeSearchTime.wday);
+		SC_LOG_DebugPrint(SC_TAG_RM, "時  : %4d", aSetting->routeSearchTime.hour);
+		SC_LOG_DebugPrint(SC_TAG_RM, "分  : %4d", aSetting->routeSearchTime.min);
+		SC_LOG_DebugPrint(SC_TAG_RM, "秒  : %4d", aSetting->routeSearchTime.sec);
+		SC_LOG_DebugPrint(SC_TAG_RM, " RouteSearch point");
+		for (num = 0; num < aSetting->pointNum; num++) {
+			SC_LOG_DebugPrint(SC_TAG_RM, "  [%d] pcl=0x%08x (%4d,%4d)", num, aSetting->rpPoint[num].parcelId, aSetting->rpPoint[num].x,
+					aSetting->rpPoint[num].y);
+		}
+	}
+#endif
 
 	return (result);
 }

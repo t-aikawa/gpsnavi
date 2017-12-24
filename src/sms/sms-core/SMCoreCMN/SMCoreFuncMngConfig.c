@@ -52,7 +52,6 @@ static E_SC_RESULT SC_MNG_MakeDir(const Char *dirPath);
 E_SC_RESULT SC_MNG_LoadSecureConfig(const Char *confDirPath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//struct stat		st = {};
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
 
@@ -116,7 +115,6 @@ E_SC_RESULT SC_MNG_LoadSecureConfig(const Char *confDirPath)
 E_SC_RESULT SC_MNG_LoadConfig(const Char *confDirPath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//struct stat		st = {};
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
 
@@ -662,7 +660,6 @@ E_SC_RESULT SC_MNG_MakeDir(const Char *dirPath)
 	Char			*pPath = NULL;
 	Char			*chr = NULL;
 	INT32			cnt = 0;
-	//UINT32			errCode = 0;
 	struct stat		st = {};
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);

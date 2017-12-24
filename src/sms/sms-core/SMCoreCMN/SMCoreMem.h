@@ -16,7 +16,7 @@
 //-----------------------------------
 #define	SC_MEM_SIZE_DYNAMIC		(1024 * 1024 * 3)	// 動的確保メモリサイズ
 #define	SC_MEM_SIZE_SHARE		(1024 * 1024 * 2)	// 常駐メモリサイズ
-#define	SC_MEM_SIZE_ROUTEPLAN	(1024 * 1024 * 25)	// 探索メモリサイズ
+#define	SC_MEM_SIZE_ROUTEPLAN	(1024 * 1024 * 28)	// 探索メモリサイズ
 #define	SC_MEM_SIZE_ROUTECAND	(1024 * 1024 * 10)	// 候補経路メモリサイズ
 #define	SC_MEM_SIZE_ROUTEMNG	(1024 * 1024)		// 経路メモリサイズ
 #define SC_MEM_SIZE_GUIDETBL	(1024 * 1024 * 4)	// 誘導テーブルメモリサイズ

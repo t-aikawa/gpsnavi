@@ -261,7 +261,7 @@ INT32 NC_RP_CancelPlanningRoute();
  * @param[in] newPoint             地点情報
  * @param[in] newPointNum          地点情報数数
  */
-Bool NC_RP_PlanSingleRoute(SMRPPOINT *newPoint, INT32 newPointNum);
+Bool NC_RP_PlanSingleRoute(SMRPPOINT *newPoint, INT32 newPointNum, INT64 time);
 
 /**
  * @brief カレント経路（地点及び結果を含む）を削除する

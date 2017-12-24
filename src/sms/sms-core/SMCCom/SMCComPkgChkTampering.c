@@ -84,7 +84,6 @@ E_SC_RESULT CC_Pkg_ChkTampering(SMCAL *smcal,
 								const Char *pkgDirPath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
 	Char	*tempDirPath = NULL;
 	Char	*xmlFilePath = NULL;
 	INT32	pkgChkTamperingListNum = -1;
@@ -196,7 +195,6 @@ E_SC_RESULT CC_Pkg_ChkTampering_XmlParse(const Char *xmlFilePath,
 	XML_Parser parser = NULL;
 	INT32	done = 0;
 	INT32	len = 0;
-	//INT32	parsedLen = 0;
 	FILE	*fp = NULL;
 	INT32	tmpPkgChkTamperingListNum = 0;
 	SMCHKTAMPERING	*tmpPkgChkTamperingList =  NULL;

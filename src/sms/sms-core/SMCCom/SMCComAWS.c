@@ -46,7 +46,6 @@ E_SC_RESULT CC_GetAWSInfo(SMCAL *smcal,
 	Char	userSig[CC_CMN_USER_SIG_STR_SIZE] = {};
 #if 1	// TR4限定
 	UChar	*policy = NULL;
-	//Char	signature[SC_CAL_SIGNATURE_SIZE] = {};
 #endif	// TR4限定
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -268,7 +267,6 @@ E_SC_RESULT CC_GetAWSBucketName(SMCAL *smcal,
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	E_SC_RESULT	ret2 = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
 	Char	*recvBuf = NULL;
 	Char	apiStatus[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 	INT32	num = 0;

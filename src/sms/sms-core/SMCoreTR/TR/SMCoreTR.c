@@ -28,7 +28,6 @@ static void redrawReq();
  */
 void SC_TR_SendCarposUpdateMsg()
 {
-	//E_SC_RESULT			ret = e_SC_RESULT_SUCCESS;
 	pthread_msq_msg_t	msg = {};
 
 	SC_LOG_DebugPrint(SC_TAG_TR, SC_LOG_START);
@@ -59,7 +58,6 @@ void SC_TR_SendCarposUpdateMsg()
  */
 void SC_TR_SendScrollUpdateMsg()
 {
-	//E_SC_RESULT			ret = e_SC_RESULT_SUCCESS;
 	pthread_msq_msg_t	msg = {};
 
 	SC_LOG_DebugPrint(SC_TAG_TR, SC_LOG_START);

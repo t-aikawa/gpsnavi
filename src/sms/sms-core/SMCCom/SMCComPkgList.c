@@ -22,7 +22,6 @@ E_SC_RESULT CC_PkgList(const Char *dirPath, SMPACKAGEINFO *pkgInfo, INT32 *pkgIn
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	DIR		*dir = NULL;
 	struct dirent	*dent = NULL;
-	//INT32	num = 0;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 

@@ -1406,8 +1406,6 @@ E_SC_RESULT 	RC_AreaDiv_Create_1_Block_Search_Area(
 
 	INT32 delta = 0;
 	INT32 x, y;
-	//INT32 w_x = 0;
-	//INT32 w_y = 0;
 	INT32 total_lnk_cnt = 0;
 	INT32 total_parcel_cnt = 0;
 	INT32 w_s_x = 0;
@@ -1506,8 +1504,6 @@ E_SC_RESULT 	RC_AreaDiv_Create_1_Block_Search_Area(
 #endif
 
 	// トップレベルのT_AreaInfoテーブルに設定する。
-	//INT32 divarea_cnt = 1;
-	//INT32 T_ParcelList_cnt = range_x * range_y;
 
 	T_RC_DivAreaInf_ptr->alt_x_for_o_pos = 0;			// 出発地点からの相対位置（ブロック方向）
 	T_RC_DivAreaInf_ptr->alt_y_for_o_pos = 0;			// 出発地点からの相対位置（レイヤー方向）
@@ -1533,7 +1529,6 @@ E_SC_RESULT 	RC_AreaDiv_Create_1_Block_Search_Area(
 		for (k = 0; k < range_x; k++) {
 			INT32 tbl_no;	//	道路密度データの配列位置
 			INT32 link_cnt;
-			//INT32 range;
 
 			tbl_no = (w_s_y + j) * range_x + (w_s_x + k);
 
@@ -1848,11 +1843,8 @@ void 	RC_AreaDiv_Set_DisConnect(
 		)
 {
 	//	ダウンロードされているかチェックする。
-	//INT32 OK_f = 0;
-	//INT32  k;
 	INT32  m, n;
 	SCRP_AREAPCLSTATE*	w_ptr = T_ParcelList_ptr;
-	//INT32  tbl_no;
 
 
 
@@ -2047,7 +2039,6 @@ E_SC_RESULT 	RC_AreaDiv_CheckDownload(
 
 	//	ダウンロードされているかチェックする。
 	INT32  k;
-	//INT32  m, n;
 
 	for(k=0;k<8;k++)	{
 		if(	density_area_ptr->data[tbl_no].areaId[k] == 0)	continue;
@@ -2096,7 +2087,7 @@ E_SC_RESULT 	RC_AreaDiv_Change_ParcelID_Pos(
 	)
 		return (e_SC_RESULT_FAIL);
 
-	if( -1 == MESHC_ChgLatLonToParcelID(
+	if( -1 == SC_Lib_ChangeTitude2PID(
 										base_latitude,		// 変換する緯度（秒）
 										base_longitude,		// 変換する経度（秒）
 										target_level,		// 変換後のレベル

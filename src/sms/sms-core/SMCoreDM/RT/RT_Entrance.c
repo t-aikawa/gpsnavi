@@ -28,7 +28,6 @@ static void RT_RGMsg_Send(E_SC_MSG_ID, E_SC_RESULT);
 void SC_RT_MsgAnalyze(pthread_msq_msg_t* aMsg)
 {
 	E_SC_RESULT			ret  = e_SC_RESULT_SUCCESS;
-	//E_SC_POSINFO_KIND	type = e_SC_POSINFO_KIND_DST;
 
 	SC_LOG_DebugPrint(SC_TAG_RT, SC_LOG_START);
 

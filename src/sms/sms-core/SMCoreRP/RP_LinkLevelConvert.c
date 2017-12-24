@@ -96,9 +96,7 @@ E_SC_RESULT RP_LinkLevelConvert(SCRP_LVCHANGE_TBL* aLvChangeTbl, E_SC_MEM_TYPE a
 	SCRP_MAPREADTBL lv1MapTbl = {};
 	SCRP_PCLRECT lv1PclRect = {};
 	UINT32 lv2LinkId = 0;
-	//UINT32 lv2LinkStX = 0;
 	UINT32 lv2FormOfs = 0;
-	//UINT32 lv2RoadIdx = 0;
 	UINT32 lv2ParcelId = aLvChangeTbl->parcelId;
 	UINT32 lv1ParcelId = SC_MESH_GetUnderLevelParcelID(aLvChangeTbl->parcelId, RP_LEVEL1);
 	UINT32 lv1StLinkId = 0;
@@ -324,7 +322,6 @@ static E_SC_RESULT makeLowLevelFormList(UINT32 aTargetParcelId, UINT32 aTargetLi
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	UINT16 targetOr = SC_MA_D_NWID_GET_SUB_CNCTSIDE(aTargetLinkId); // リンク方向取得
-	//UINT16 x = 0, y = 0;
 	UINT16 setIdx = 0;
 	UINT16 crntOr = 0;
 	UINT16 nextOr = 0;

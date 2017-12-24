@@ -51,7 +51,6 @@ E_SC_RESULT SC_PM_Finalize()
  */
 void *SC_PM_ThreadMain(void *param)
 {
-	//E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32	rc = 0;
 	pthread_msq_msg_t	rmsg = {};
 

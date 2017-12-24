@@ -669,7 +669,7 @@ void SC_CONFIG_SetValueOption(const Char *secName, const Char *keyName, const Ch
 	// UsingRegulationType
 	else if (0 == strcmp((char*)keyName, RT_PLN_KEY_USINGREGULATIONTYPE)) {
 		// value
-		configData->option.vehicleType = atoi((char*)value);
+		configData->option.regulationType = atoi((char*)value);
 	}
 	// TollType
 	else if (0 == strcmp((char*)keyName, RT_PLN_KEY_TOLL_TYPE)) {

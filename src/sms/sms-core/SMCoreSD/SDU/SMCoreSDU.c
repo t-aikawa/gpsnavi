@@ -238,17 +238,13 @@ E_SC_RESULT SC_SDU_Upload(const Char *startTime, Bool isTerminal)
 	INT32	num = 0;
 	INT32	dataNum = 0;
 	Bool	lastFlg = false;
-	//Bool	terminal = false;
 	Char	*url = NULL;
-	//INT32	dataLen = 0;
 	Char	*fileName = NULL;
 	Char	*res = NULL;
 	Char	*body = NULL;
 	UINT32	bodyLen = 0;
 	UINT32	resLen = 0;
 	E_CONTEXT_TYPE	contextType = E_APP_BIN;
-	//UChar	*policy = NULL;
-	//Char	signature[SC_CAL_SIGNATURE_SIZE] = {};
 	SMCALPOSTPARAM	param[7] = {};
 	SMAWSINFO	aws = {};
 	struct stat	st = {};

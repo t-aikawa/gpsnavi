@@ -427,7 +427,6 @@ void XMLCALL CC_GemLikeReg_StartElement(void *userData, const char *name, const 
 void XMLCALL CC_GemLikeReg_EndElement(void *userData, const char *name)
 {
 	GEMLIKE_PARSER *parser = (GEMLIKE_PARSER*)userData;
-	//GEMINFO	*gem = NULL;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 

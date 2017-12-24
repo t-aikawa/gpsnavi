@@ -228,9 +228,6 @@ E_SC_RESULT RG_CTL_RunSimulation()
 	RT_TBL_MAIN_t			*guidetbl_p;
 	RG_CTL_MAIN_t			*guidectl_p;
 	RG_CTL_TRACK_t			*newTrack_p;
-	//DOUBLE					lat,lon;
-	//DOUBLE					x,y;
-	//UINT32					parcel_id;
 
 	// 誘導テーブル参照開始
 	guidetbl_p = RT_TBL_LockGuideTbl();
@@ -285,7 +282,6 @@ static E_SC_RESULT RG_CTL_SimMoveNewPoint(	RT_TBL_MAIN_t		*guidetbl_p,
 	DOUBLE					subLen;
 	DOUBLE					mvLen;
 	DOUBLE					totalLen;
-	//DOUBLE					radian;
 	DOUBLE					vectorx;
 	DOUBLE					vectory;
 	DOUBLE					par;

@@ -61,14 +61,9 @@ E_SC_RESULT RT_MAP_SetReqTbl(UINT32 parcel_id, T_DHC_REQ_PARCEL *mapReqPcl, RT_M
  */
 E_SC_RESULT RT_MAP_DataRead(T_DHC_REQ_PARCEL *mapReqPcl, RT_MAPREQ_t *reqtbl)
 {
-#if 0
-	E_SC_RESULT			ret;
-#else
-	E_DHC_CASH_RESULT	ret;
-#endif
+	E_DHC_CASH_RESULT			ret;
 	T_DHC_RES_DATA		mapResData = {};
 	UINT16				ilp;
-	//static UINT8		*map = NULL;
 
 	if (NULL == mapReqPcl || NULL == reqtbl) {
 		SC_LOG_ErrorPrint(SC_TAG_RT, "[MAP] ERROR " HERE);
@@ -109,11 +104,7 @@ E_SC_RESULT RT_MAP_DataRead(T_DHC_REQ_PARCEL *mapReqPcl, RT_MAPREQ_t *reqtbl)
  */
 E_SC_RESULT RT_MAP_DataFree(RT_MAPREQ_t *reqtbl)
 {
-#if 0
-	E_SC_RESULT			ret;
-#else
-	E_DHC_CASH_RESULT	ret;
-#endif
+	E_DHC_CASH_RESULT			ret;
 	T_DHC_REQ_PARCEL	aReqPcl;
 	UINT16				ilp;
 

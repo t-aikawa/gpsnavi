@@ -63,7 +63,6 @@ E_SC_RESULT SMBkgdAnalyze::InitBkgd(void)
 	UINT16 tmpTypeCode = INVALID_16;
 	BA_BKGD_INFO2 info2;
 	UINT32 i;
-	//UINT32 bkgd_elm_size;
 
 	// 背景要素数
 	m_bkgd_cnt = GetUINT32(m_pBkgd, 4);

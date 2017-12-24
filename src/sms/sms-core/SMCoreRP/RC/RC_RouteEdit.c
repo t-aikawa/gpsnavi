@@ -198,8 +198,6 @@ static E_SC_RESULT RC_RtCuttingSect(SC_RP_RouteMng* aBaseRt, SC_RP_RouteMng* aEd
 
 	E_SC_RESULT ret = e_SC_RESULT_FAIL;
 	SC_RP_SectInfo* newBuf;
-	//UINT32 totalVol = 0;
-	//UINT32 idx;
 	UINT16 i;
 
 	do {

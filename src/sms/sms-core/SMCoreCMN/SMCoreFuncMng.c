@@ -53,6 +53,7 @@ static E_SC_RESULT SC_MNG_SubFuncFinalize();
 static E_SC_RESULT SC_MNG_ThreadInitialize();
 static E_SC_RESULT SC_MNG_ThreadFinalize();
 static void SC_MNG_InitPath(const Char *rootDir, const Char *confDir, const Char *mapDir);
+static E_SC_RESULT SC_MNG_BuildSearchTime(INT64 aTime, SMRPSEARCHTIME *aSearchTime);
 
 //-----------------------------------
 // 構造体定義
@@ -2184,15 +2185,20 @@ E_SC_RESULT SC_MNG_RefreshMap(INT32 maps)
  * @param[in] type  探索条件種別
  * @return 処理結果(E_SC_RESULT)
  */
-E_SC_RESULT SC_MNG_DoRoute(E_ROUTE route)
-{
-	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
+E_SC_RESULT SC_MNG_DoRoute(E_ROUTE route, INT64 time) {
+	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	pthread_msq_msg_t msg = {};
-	//SMRPTIPINFO	tipInfo = {};
+	SMRPTIPINFO tip = {};
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
 
 	do {
+		// 探索時間の設定
+		result = SC_MNG_SetSearchTime(time);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_MNG_SetSearchTime error. [0x%08x] " HERE, result);
+			break;
+		}
 		if (e_ROUTE_SINGLE == route) {
 			// 単経路探索要求メッセージ生成
 			msg.data[SC_MSG_MSG_ID] = e_SC_MSGID_REQ_RM_RTSINGLE;	// メッセージID(単経路探索要求)
@@ -2206,89 +2212,92 @@ E_SC_RESULT SC_MNG_DoRoute(E_ROUTE route)
 		}
 
 		// 送信メッセージをログ出力
-		SC_LOG_DebugPrint(SC_TAG_CORE,
-				"sendMsg=0x%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x, " HERE,
-				msg.data[0],  msg.data[1],  msg.data[2],  msg.data[3],  msg.data[4],
-				msg.data[5],  msg.data[6],  msg.data[7],  msg.data[8],  msg.data[9]);
+		SC_LOG_DebugPrint(SC_TAG_CORE, "sendMsg=0x%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x, " HERE, msg.data[0], msg.data[1],
+				msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7], msg.data[8], msg.data[9]);
 
 		// 経路探索スレッドに経路探索要求メッセージ送信
 		if (PTHREAD_MSQ_OK != pthread_msq_msg_send(SC_CORE_MSQID_RM, &msg, SC_CORE_MSQID_FM)) {
 			SC_LOG_ErrorPrint(SC_TAG_CORE, "pthread_msq_msg_send error, " HERE);
-			ret = e_SC_RESULT_FAIL;
+			result = e_SC_RESULT_FAIL;
 			break;
 		}
 
 		// セマフォロック
 #ifdef __SMS_APPLE__
-		ret = SC_LockSemaphore(syncAPISem);
+		result = SC_LockSemaphore(syncAPISem);
 #else
-		ret = SC_LockSemaphore(&syncAPISem);
+		result = SC_LockSemaphore(&syncAPISem);
 #endif /* __SMS_APPLE__ */
-		if (e_SC_RESULT_SUCCESS != ret) {
+		if (e_SC_RESULT_SUCCESS != result) {
 			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_LockSemaphore error, " HERE);
 			break;
 		}
 
 		// 処理結果取得
-		ret = apiResult;
+		result = apiResult;
 
 	} while (0);
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
 
-	return (ret);
+	return (result);
 }
 
 /**
  * @brief 再探索する
  * @param[in] route 探索条件(単経路探索、複数経路探索)
- * @param[in] type  探索条件種別
+ * @param[in] time  探索時間
  * @return 処理結果(E_SC_RESULT)
  */
-E_SC_RESULT SC_MNG_RePlan(E_ROUTE route)
-{
-	E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
+E_SC_RESULT SC_MNG_RePlan(E_ROUTE route, INT64 time) {
+
+	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	pthread_msq_msg_t msg = {};
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_START);
 
 	do {
+		// 探索時間の設定
+		result = SC_MNG_SetSearchTime(time);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_MNG_SetSearchTime error. [0x%08x] " HERE, result);
+			break;
+		}
+
 		// 再探索要求メッセージ生成
 		msg.data[SC_MSG_MSG_ID] = e_SC_MSGID_REQ_RM_REROUTE;
 
 		// 送信メッセージをログ出力
-		SC_LOG_DebugPrint(SC_TAG_CORE,
-				"sendMsg=0x%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x, " HERE,
-				msg.data[0],  msg.data[1],  msg.data[2],  msg.data[3],  msg.data[4],
-				msg.data[5],  msg.data[6],  msg.data[7],  msg.data[8],  msg.data[9]);
+		SC_LOG_DebugPrint(SC_TAG_CORE, "sendMsg=0x%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x, " HERE, msg.data[0], msg.data[1],
+				msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7], msg.data[8], msg.data[9]);
 
 		// メッセージ送信 FM->RM
 		if (PTHREAD_MSQ_OK != pthread_msq_msg_send(SC_CORE_MSQID_RM, &msg, SC_CORE_MSQID_FM)) {
 			SC_LOG_ErrorPrint(SC_TAG_CORE, "pthread_msq_msg_send error, " HERE);
-			ret = e_SC_RESULT_FAIL;
+			result = e_SC_RESULT_FAIL;
 			break;
 		}
 
 		// セマフォロック
 #ifdef __SMS_APPLE__
-		ret = SC_LockSemaphore(syncAPISem);
+		result = SC_LockSemaphore(syncAPISem);
 #else
-		ret = SC_LockSemaphore(&syncAPISem);
+		result = SC_LockSemaphore(&syncAPISem);
 #endif /* __SMS_APPLE__ */
-		if (e_SC_RESULT_SUCCESS != ret) {
+		if (e_SC_RESULT_SUCCESS != result) {
 			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_LockSemaphore error, " HERE);
 			break;
 		}
 
 		// 処理結果取得
-		ret = apiResult;
+		result = apiResult;
 
 		/** 探索結果の有無フラグ変更なし **/
 	} while (0);
 
 	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
 
-	return (ret);
+	return (result);
 }
 
 /**
@@ -4711,14 +4720,11 @@ static void SC_MNG_InitPath(const Char *rootDir, const Char *confDir, const Char
 
 E_SC_RESULT  RG_NMG_GetDynamicGraphicBitmap(SMBITMAPINFO	*bitmapinfo)
 {
-	//E_SC_RESULT							ret = e_SC_RESULT_SUCCESS;
 	Char								*buffer;
 	INT32								size;
 	INT32								readsize;
 	INT32								width;
 	INT32								height;
-	//INT32								ilp;
-	//Char								tmp;
 
 	static char filename[] = "/mnt/sdcard/AndroidNaviSys/MAPPY/Log/sample.bmp";
 	FILE	*fp;
@@ -5728,3 +5734,103 @@ E_SC_RESULT SC_MNG_RefreshTraffic(INT32 mode)
 
 	return (ret);
 }
+
+/**
+ * @brief posix timeを探索時間テーブルへ変換する（経路探索用）
+ * @param posix time
+ * @param 格納テーブル
+ * ダミー aTime = 1298616934703LL;
+ * time_tは2038年問題を内包しています。
+ */
+static E_SC_RESULT SC_MNG_BuildSearchTime(INT64 aTime, SMRPSEARCHTIME *aSearchTime) {
+
+	if (NULL == aSearchTime) {
+		SC_LOG_ErrorPrint(SC_TAG_CORE, "bad param. " HERE);
+		return (e_SC_RESULT_BADPARAM);
+	}
+
+	// 指定が0の場合は現在時刻へ書き換える
+	if (0 == aTime) {
+		aTime = (INT64) time(NULL) * 1000;
+	}
+
+	const time_t timer = aTime / 1000;
+	struct tm* tm_t;
+
+	// テーブルへ分解
+	tm_t = localtime(&timer);
+
+	// 結果格納
+	aSearchTime->year = tm_t->tm_year + 1900;
+	aSearchTime->mon = tm_t->tm_mon + 1;
+	aSearchTime->mday = tm_t->tm_mday;
+	aSearchTime->wday = tm_t->tm_wday;
+	aSearchTime->hour = tm_t->tm_hour;
+	aSearchTime->min = tm_t->tm_min;
+	aSearchTime->sec = tm_t->tm_sec;
+
+	return (e_SC_RESULT_SUCCESS);
+}
+
+/**
+ * @brief 探索時間を設定する
+ * @param[in] time 探索時間
+ * @return 処理結果(E_SC_RESULT)
+ */
+E_SC_RESULT SC_MNG_SetSearchTime(INT64 time) {
+
+	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
+	SC_DH_SHARE_RPSEARCHTIME searchTime = { 0 };
+	SC_DH_SHARE_DATA shareData = { e_SC_DH_SHARE_RPSEARCHTIME, &searchTime };
+
+	do {
+		// 探索時間の設定(0の場合現在時刻設定)
+		result = SC_MNG_BuildSearchTime(time, &searchTime.routeSearchTime);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_MNG_BuildSearchTime error. [0x%08x] " HERE, result);
+			break;
+		}
+		// 共有メモリから取得
+		result = SC_DH_SetShareData(&shareData);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_DH_SetShareData error. [0x%08x] " HERE, result);
+			break;
+		}
+	} while (0);
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
+	return (result);
+}
+
+/**
+ * @brief 探索時間を取得する
+ * @param[out] time 探索時間
+ * @return 処理結果(E_SC_RESULT)
+ */
+E_SC_RESULT SC_MNG_GetSearchTime(SMRPSEARCHTIME *aSearchTime) {
+
+	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
+	SC_DH_SHARE_RPSEARCHTIME searchTime = { 0 };
+	SC_DH_SHARE_DATA shareData = { e_SC_DH_SHARE_RPSEARCHTIME, &searchTime };
+
+	do {
+		// パラメータチェック
+		if (NULL == aSearchTime) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "param error " HERE);
+			result = e_SC_RESULT_BADPARAM;
+			break;
+		}
+
+		// 共有メモリから取得
+		result = SC_DH_GetShareData(&shareData);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_CORE, "SC_DH_SetShareData error. [0x%08x] " HERE, result);
+			break;
+		}
+		memcpy(aSearchTime, &searchTime.routeSearchTime, sizeof(SMRPSEARCHTIME));
+	} while (0);
+
+	SC_LOG_DebugPrint(SC_TAG_CORE, SC_LOG_END);
+	return (result);
+}
+

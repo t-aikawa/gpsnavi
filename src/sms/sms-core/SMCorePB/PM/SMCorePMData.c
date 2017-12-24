@@ -107,15 +107,10 @@ E_SC_RESULT SC_PM_ProbeInfo_Initial()
 E_SC_RESULT SC_PM_CreateProbeData(const pthread_msq_msg_t *msg)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//pthread_msq_msg_t sendMsg = {};
 	Char* p_buff = NULL;						// プローブ情報データ格納エリアポインタ
 	Char* p_fname_buff = NULL;					// プローブ情報データファイル名格納エリアポインタ
 	UINT16 buff_size = 0;						// プローブ情報データサイズ
-	//Char* p_posinf_buff = NULL;					// 位置情報共有データ格納エリアポインタ
-	//Char* p_posinf_fname_buff = NULL;			// 位置情報共有データファイル名格納エリアポインタ
-	//UINT16 posinf_buff_size = 0;				// 位置情報共有データサイズ
 	Bool	isUpload = false;
-	//UINT32	cnt = 0;
 
 	SC_LOG_DebugPrint(SC_TAG_PM, SC_LOG_START);
 

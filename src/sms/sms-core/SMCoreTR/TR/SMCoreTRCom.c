@@ -146,7 +146,6 @@ static E_SC_RESULT analyzeFile(char* pFile, TR_TRAFFIC_LIST_t *pTraffic)
 	UINT32		i = 0;
 	UINT32		size = 0;
 	FILE		*pF = NULL;
-	//char*		pBuf = NULL;
 	char		data[TR_DATA_HEAD_SIZE] = {};
 
 	SC_LOG_DebugPrint(SC_TAG_TR, SC_LOG_START);

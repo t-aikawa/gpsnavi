@@ -184,9 +184,6 @@ E_SC_RESULT RC_RouteMake(SCRP_MANAGER* aRPManager, SCRP_SECTCONTROLER* aSectCtrl
 	RP_SetLapTime();
 #endif
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
-	//SCRP_CANDDATA *lastLink = NULL;
-	//UINT32 linkCnt = 0;
-	//UINT16 pclCnt = 0;
 	SC_RP_RouteMng sectRouteMng = {};
 	RCRT_CAND_WKTBL candWkTbl = {};
 
@@ -225,6 +222,13 @@ E_SC_RESULT RC_RouteMake(SCRP_MANAGER* aRPManager, SCRP_SECTCONTROLER* aSectCtrl
 		result = splitRouteTrim(aSectCtrl, &sectRouteMng);
 		if (e_SC_RESULT_SUCCESS != result) {
 			SC_LOG_ErrorPrint(SC_TAG_RC, "splitRouteTrim error. [0x%08x] "HERE, result);
+			break;
+		}
+
+		// 経路上に規制情報がある場合にフラグを設定する
+		result = RP_RegRouteBuildLinkRegIndex(&sectRouteMng);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_RC, "buildRouteRegulation error. [0x%08x] "HERE, result);
 			break;
 		}
 
@@ -497,8 +501,6 @@ static E_SC_RESULT mallocWorkCand(RCRT_CAND_WKTBL* aCollectionMng) {
 
 	// データ復帰
 	if (0 < aCollectionMng->candSize) {
-		// kana暫定
-		//RP_Memcpy(newBuf, aCollectionMng->ppCandData, sizeof(SCRP_CANDDATA) * aCollectionMng->candSize);
 		RP_Memcpy(newBuf, aCollectionMng->ppCandData, sizeof(SCRP_CANDDATA*) * aCollectionMng->candSize);
 		RP_MemFree(aCollectionMng->ppCandData, e_MEM_TYPE_ROUTEPLAN);
 	}
@@ -697,7 +699,6 @@ static E_SC_RESULT makeRouteCandList(SCRP_SECTCONTROLER* aSectCtrl, RCRT_CAND_WK
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	SCRP_CANDSTARTLINK* minCostStCand = NULL;
-	//SCRP_CANDTBLINFO* candInfo = NULL;
 	SCRP_CANDTBLINFO* candInfoList[4] = { NULL, NULL, NULL, NULL };
 	UINT32 stCandIdx = ALL_F32;
 	Bool sameArea = false;
@@ -892,8 +893,6 @@ static E_SC_RESULT routeCandSearchNextStep(SCRP_SECTCONTROLER* aSectCtrl, SCRP_C
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	SCRP_CANDSTARTLINK* stCand = NULL;
-	//UINT32 preCost = ALL_F32;
-	//UINT32 resultIdx = ALL_F32;
 	UINT32 i;
 
 	// 初期化
@@ -941,7 +940,6 @@ static E_SC_RESULT routeCandSearchNextStep(SCRP_SECTCONTROLER* aSectCtrl, SCRP_C
 static E_SC_RESULT routeCandSearchSplitLinkMinCost(SCRP_SECTCONTROLER* aSectCtrl, SCRP_CANDTBLINFO* aCandInfo, UINT32* aStCandIndex) {
 	SC_LOG_DebugPrint(SC_TAG_RC, SC_LOG_START);
 
-	//const UINT32 kindCvt[17] = { 0, 0, 0, 0, 3, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3 };
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	E_DHC_CASH_RESULT cashResult = e_DHC_RESULT_CASH_SUCCESS;
@@ -1170,8 +1168,6 @@ static E_SC_RESULT makeRoutePclLinkTbl(RCRT_CAND_WKTBL* aCandWkTbl, SC_RP_RouteM
 
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
 	SCRP_CANDDATA** ppCand = NULL;
-	//SC_RP_ParcelInfo* pclInfo = NULL;
-	//SC_RP_LinkInfo* linkInfo = NULL;
 	SCRP_LVCHANGE_TBL lvChange = {};
 	UINT32 crntLinkIdx = 0;
 	UINT32 crntPclIdx = 0;
@@ -1430,7 +1426,6 @@ static E_SC_RESULT makeRoutePclLinkTblForLvConvert(SCRP_LVCHANGE_TBL* aLvChange,
 	UINT32 pclVol = 0;
 	UINT32 parcelId = 0;
 	UINT32 i;
-	//UINT32 e;
 
 	do {
 		// パーセル数を算出する
@@ -1676,7 +1671,6 @@ static E_SC_RESULT makeRouteTarmLinkInfo(SCRP_SECTCONTROLER* aSectCtrl, SC_RP_Ro
 	SC_RP_LinkInfo* stLinkInfo = NULL;
 	SC_RP_LinkInfo* edLinkInfo = NULL;
 	SC_RP_LinkInfo* wkLinkInfo = NULL;
-	//SC_RP_FormInfo* formInfo = NULL;
 	SCRP_NEIGHBORINFO* neigborInfo = NULL;
 	RCRT_TERMINFO term = {};
 	Bool startFlg = false;
@@ -2344,7 +2338,7 @@ static Bool checkSameTarmLink(SC_RP_RouteMng* aNewRouteMng) {
 	RCRT_SAVEROUTEINFO* saveRoute = RCRT_GET_SAVEROUTEINFO();
 	SC_RP_RouteMng* mstMng = &saveRoute->routeMng;
 
-	//SC_RP_SectInfo* newSect = aNewRouteMng->sectInfo;
+	SC_RP_SectInfo* newSect = aNewRouteMng->sectInfo;
 	SC_RP_ParcelInfo* newPclInfo = aNewRouteMng->parcelInfo;
 	SC_RP_LinkInfo* newLinkInfo = aNewRouteMng->linkInfo;
 
@@ -2377,7 +2371,6 @@ static E_SC_RESULT searchSameTarmLink(SC_RP_RouteMng* aNewRouteMng, SCRP_SECTCON
 	RCRT_SAVEROUTEINFO* saveRoute = RCRT_GET_SAVEROUTEINFO();
 	SC_RP_RouteMng* mstMng = &saveRoute->routeMng;
 
-	//SC_RP_SectInfo* newSect = aNewRouteMng->sectInfo;
 	SC_RP_ParcelInfo* newPclInfo = aNewRouteMng->parcelInfo;
 	SC_RP_LinkInfo* newLinkInfo = aNewRouteMng->linkInfo;
 

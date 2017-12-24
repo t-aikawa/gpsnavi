@@ -27,7 +27,6 @@ static void RG_FMMsg_Send(E_SC_MSG_ID, E_SC_RESULT);
 void SC_RG_MsgAnalyze(pthread_msq_msg_t* aMsg)
 {
 	E_SC_RESULT			ret  = e_SC_RESULT_SUCCESS;
-	//E_SC_POSINFO_KIND	type = e_SC_POSINFO_KIND_DST;
 	static INT32		simstart_f = 0;
 
 	SC_LOG_DebugPrint(SC_TAG_RG, SC_LOG_START);

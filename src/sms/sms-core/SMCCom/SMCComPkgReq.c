@@ -851,7 +851,6 @@ void XMLCALL CC_PkgReq_CharacterData(void *userData, const XML_Char *data, INT32
 {
 	PKGREQ_PARSER *parser = (PKGREQ_PARSER*)userData;
 	SMPACKAGEGROUPINFO	*pkgGroupInfo = NULL;
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

@@ -454,7 +454,6 @@ void SC_MEM_Dump() {
  */
 void SC_MEM_Dump_Type(E_SC_MEM_TYPE type) {
 
-	//INT32 i;
 	INT32 e;
 	MEM_ALLOCAREAINF *inf = NULL;
 	MEM_CELL *cur = NULL;			// 現在領域のポインタ */

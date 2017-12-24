@@ -136,8 +136,6 @@ RDSP_HDL SMRoadShapeAnalyze::SearchShapeHdl(UINT32 LinkID)
 E_SC_RESULT SMRoadShapeAnalyze::InitRoadShape(void)
 {
 	UINT32 i;
-//	UINT32 j;
-	//UINT32 rd_sp_index = 0;
 
 	char* p_road;
 	BA_VOLUM_INFO vol_info;

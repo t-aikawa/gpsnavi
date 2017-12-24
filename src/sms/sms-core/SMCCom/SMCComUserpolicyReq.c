@@ -65,7 +65,6 @@ E_SC_RESULT CC_UserpolicyReq_SendRecv(SMCAL* smcal,
 {
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	E_SC_CAL_RESULT	cal_ret = CC_CMN_RESULT_SMCAL_OK;
-	//INT32 resp_sz = 0;							// httpレスポンスサイズ(ヘッダ含む)
 	Char *p_body = NULL;						// httpレスポンスボディ部へのポインタ
 	INT32 body_sz = 0;							// httpレスポンスボディ部サイズ
 	E_CONTEXT_TYPE contextType = E_TEXT_XML;	// Content-Type
@@ -323,7 +322,6 @@ void XMLCALL CC_UserpolicyReq_EndElement(void *userData, const char *name)
 void XMLCALL CC_UserpolicyReq_CharacterData(void *userData, const XML_Char *data, INT32 len)
 {
 	T_CC_USERPOLICYREQ_PARSER	*pParser = (T_CC_USERPOLICYREQ_PARSER*)userData;	// パーサ
-	//char buf[CC_CMN_XML_PARSE_DATA_SIZE + 1] = {};
 	INT32	bufLen = 0;
 
 //	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);

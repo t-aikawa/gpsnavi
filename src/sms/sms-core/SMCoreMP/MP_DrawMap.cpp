@@ -446,13 +446,6 @@ static E_SC_RESULT mp_CreateParcel(T_PARCEL_DATA *pParcelData, UINT32 parcelID)
 	T_DHC_RES_DATA mapResData = {};
 	Bool pclDataFlg = false;
 	E_DHC_CASH_RESULT ret = e_DHC_RESULT_CASH_SUCCESS;
-	//char* p_road_shape = NULL;
-	//char* p_bkgd = NULL;
-	//char* p_name = NULL;
-	//char* p_mark = NULL;
-	//char* p_road_name = NULL;
-	//char* p_basis = NULL;
-
 
 	// 初期化
 	pParcelData->parcel_id = parcelID;
@@ -1614,7 +1607,6 @@ static bool mp_DrawBkgdVBOPolygon(T_PARCEL_DATA* p_Data, UINT16 bkgdKindCodeType
 static bool mp_DrawNameData(T_PARCEL_DATA* p_Data)
 {
 	T_VIEW_INFO* pVi = NULL;
-	//E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 
 	if (p_Data->p_NameAnalyze == NULL) {
 		return (true);
@@ -1625,8 +1617,6 @@ static bool mp_DrawNameData(T_PARCEL_DATA* p_Data)
 
 	pVi = MP_GetViewInfo();
 
-	//FLOAT keisuuX = p_Data->ParcelInfo.keisuuX;
-	//FLOAT keisuuY = p_Data->ParcelInfo.keisuuY;
 	UINT16 zoomFlg = ParamScale_ZoomFlg(pVi->scale_level);
 	FLOAT angle = pVi->disp_angle;
 	static char str_utf8[256];
@@ -1793,10 +1783,7 @@ static bool mp_DrawMarkData(T_PARCEL_DATA* p_Data)
 
 	pVi = MP_GetViewInfo();
 
-	//FLOAT keisuuX = p_Data->ParcelInfo.keisuuX;
-	//FLOAT keisuuY = p_Data->ParcelInfo.keisuuY;
 	UINT16 zoomFlg = ParamScale_ZoomFlg(pVi->scale_level);
-	//FLOAT angle = pVi->disp_angle;
 	MARK_HDL h_mark;
 
 	// 記号背景数取得
@@ -1874,7 +1861,6 @@ static bool mp_DrawRoadNameData(T_PARCEL_DATA* p_Data)
 	RGBACOLOR outColor;
 	FLOAT fontSize = 0.0f;
 	FLOAT scale = 0.0f;
-	//E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	FLOAT angle = 0.0f;
 
 	if (NULL == p_Data->p_RoadNameAnalyze) {
@@ -2141,7 +2127,6 @@ static bool mp_DrawBkgdColor(T_PARCEL_DATA* p_Data)
 
 static T_BITMAPFONT* mp_GetRoadNameBitmapFont(MP_FontMng *pFontMng, UINT32 offset, char* pStr, FLOAT fontSize, Bool turnOver, RGBACOLOR color, RGBACOLOR outLineColor)
 {
-	//E_SC_RESULT ret = e_SC_RESULT_SUCCESS;
 	T_BITMAPFONT *pBitmapFont;
 	T_VIEW_INFO* pVi = NULL;
 	static char tmpStr[MP_ROAD_NAME_MAX_SIZE+4];

@@ -83,12 +83,13 @@ void RPDBG_DumpRoute(SC_RP_RouteMng* aRouteMng, Bool aLinkDmp, Bool aFormDmp) {
 		for (i = 0; i < aRouteMng->linkVol; i++) {
 			char buf[256] = {};
 			linkInfo = aRouteMng->linkInfo + i;
-			sprintf(buf, "LinkId[0x%08x(%d)] dist(%4d) time(%5d) termflg(%d) level=%d FormOfs/Vol[%5d/%5d] RegOfs/Vol[%5d/%5d]" //
+			sprintf(buf, "LinkId[0x%08x(%d)] dist(%4d) time(%5d) termflg(%d) regflg(%d) level=%d FormOfs/Vol[%5d/%5d] RegOfs/Vol[%5d/%5d]" //
 					, linkInfo->linkId //
 					, linkInfo->orFlag //
 					, linkInfo->dist //
 					, linkInfo->travelTime //
 					, linkInfo->termFlag //
+					, linkInfo->regFlag //
 					, linkInfo->level //
 					, linkInfo->formIdx //
 					, linkInfo->formVol //
@@ -126,15 +127,15 @@ void RPDBG_ShowNetwork(SCRP_NETCONTROLER* aNetCtrl) {
 	if (NULL == aNetCtrl) {
 		return;
 	}
-	//const UINT16 cLowOfs[2] = { 8, 10 };
-	// 上位接続
-	const Bool up = false;
-	// 下位接続
-	const Bool down = false;
+	const UINT16 cLowOfs[2] = { 8, 10 };
+
+	const Bool up = false;					// 上位接続
+	const Bool down = false;				// 下位接続
 	const UINT32 downMax = 100;
 	UINT32 downCount = 0;
-	// 断裂リンク
-	const Bool split = false;
+	const Bool split = false;				// 断裂リンク
+	const Bool mapPointer = true;			// 地図アドレス
+	const Bool regOffset = true;			// 規制オフセット
 
 	UINT32 i, e, or;
 	for (i = 0; i < aNetCtrl->parcelInfoVol; i++) {
@@ -148,6 +149,13 @@ void RPDBG_ShowNetwork(SCRP_NETCONTROLER* aNetCtrl) {
 				, pclInfo->linkVol //リンク数
 				, pclInfo->linkIdx //リンクインデックス
 				);
+		if (mapPointer) {
+			SC_LOG_InfoPrint(SC_TAG_RC, "                     road=%p link=%p reg=%p " //
+					, pclInfo->mapNetworkBin //ネットワーク先頭
+					, pclInfo->mapNetworkLinkBin //リンク先頭
+					, pclInfo->mapNetworkRegBin //規制先頭
+					);
+		}
 
 		if (NULL == pclInfo->mapNetworkLinkBin || NULL == pclInfo->mapNetworkLinkExBin) {
 			continue;
@@ -190,6 +198,11 @@ void RPDBG_ShowNetwork(SCRP_NETCONTROLER* aNetCtrl) {
 								read4byte(pLowLinkEx), read4byte(pLowLinkEx + 4), read4byte(pLowLinkEx + 8), lowPclId);
 					}
 				}
+				if (regOffset) {
+					if (ALL_F32 != linkInfo->regOfs) {
+						sprintf(buffer, "%s reg=%4d", buffer, linkInfo->regOfs);
+					}
+				}
 				// 表示
 				if (0 < strlen(buffer)) {
 					SC_LOG_InfoPrint(SC_TAG_RC, " link=0x%08x(or=%d) %s", SC_MA_D_NWRCD_LINK_GET_ID(pLink), or, buffer);
@@ -201,7 +214,6 @@ void RPDBG_ShowNetwork(SCRP_NETCONTROLER* aNetCtrl) {
 
 void RPDBG_ShowStepLog(SCRP_SECTCONTROLER *aSectCtrl, E_RP_RTCALCSTEP aStep) {
 
-	//SCRP_DIVAREA* divInfo = NULL;
 	SCRP_LEVELAREA* lvArea = NULL;
 
 	switch (aStep) {
@@ -573,12 +585,9 @@ void RPDBG_CheckIntegrityCand(SCRP_SECTCONTROLER* aSect) {
 }
 
 void RPDBG_CheckIntegrityNet(SCRP_SECTCONTROLER* aSect) {
-	//SCRP_CANDDATA* cand = aSect->candMng.cand;
 	UINT32 i, e;
-	//UINT32 u;
 	SCRP_PCLINFO* pclInfo = aSect->netTable.parcelInfo;
 	SCRP_LINKINFO* linkInfo = NULL;
-	//SCRP_PCLRECT* rect = &aSect->levelTable.areaTable[3].pclRect;
 
 	for (i = 0; i < aSect->netTable.parcelInfoVol; i++, pclInfo++) {
 		linkInfo = aSect->netTable.linkTable;
@@ -767,4 +776,100 @@ void RPDBG_ShowTargetCalcNowLink(SCRP_NETCONTROLER* aNetCtrl, SCRC_CROSSLINKTBL*
 			}
 		}
 	}
+}
+
+/**
+ * @brief 規制リンク列をダンプする
+ */
+void RPDBG_DumpRegulationLinks(RCREG_REGDATAINFO* aRegInfo, UINT32 baseParcel) {
+	INT8 sft[10][2] = { { 0, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { -1, 0 }, { 0, 0 }, { 1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 } };
+	UINT32 parcelId = baseParcel;
+	UINT32 linkId;
+	UINT32 sftId;
+	UINT32 i;
+	char key[2][4] = { "", "key" };
+
+	SC_LOG_DebugPrint(SC_TAG_RC, "Regdmp code=%d out=%d in=%d", aRegInfo->code[0], aRegInfo->linkVol1, aRegInfo->linkVol2);
+
+	for (i = 0; i < aRegInfo->linkVol1 + aRegInfo->linkVol2; i++) {
+		UINT8 keyflg = 0;
+		linkId = read4byte(aRegInfo->pLink + i * 4);
+		sftId = ((linkId >> 27) & 0x0000000F);
+		if (5 != sftId) {
+			parcelId = SC_MESH_SftParcelId(parcelId, sft[sftId][0], sft[sftId][1]);
+			SC_LOG_DebugPrint(SC_TAG_RC, " %d sft %d %d", i, sft[sftId][0], sft[sftId][1]);
+		}
+		switch (aRegInfo->code[0]) {
+		case RCREG_REGID1:			// n+1~1 No left turn.     通常規制
+		case RCREG_REGID2:			// n+1~1 No right turn.    通常規制
+		case RCREG_REGID3:			// n+1~1 No straight on.   通常規制
+		case RCREG_REGID4:			// n+1~1 No u turn.        通常規制
+		case RCREG_REGID10:			// n+1~1 open.             計画道路
+		case RCREG_REGID11:			// n+1~1 close             計画道路
+		case RCREG_REGID15:			// n+1~1 generated regulation.  only規制から生成した規制
+			// 退出リンク：1本 キーリンク：1本
+			if (0 == i) {
+				keyflg = 1;
+			}
+			break;
+		case RCREG_REGID5:			// n+m~1 No entry.         侵入不可
+			// 退出リンク：m本 キーリンク：1本
+			if (0 == i) {
+				keyflg = 1;
+			}
+			break;
+		case RCREG_REGID6:			// n+m~m No exit.          退出不可
+			// 退出リンク：m本 キーリンク：m本
+			if (i < aRegInfo->linkVol1) {
+				keyflg = 1;
+			}
+			break;
+		case RCREG_REGID7:			// n+1~1 Only right turn.  only規制
+		case RCREG_REGID8:			// n+1~1 Only left turn.   only規制
+		case RCREG_REGID9:			// n+1~1 Only straight on. only規制
+			// 対象としないが同一規制オフセットに該当する
+			if (0 == i) {
+				keyflg = 1;
+			}
+			break;
+		case RCREG_REGID12:		// ..R~R passage reguration. 単独規制
+			// 全リンク
+			keyflg = 1;
+			break;
+		default:
+			break;
+		}
+		SC_LOG_DebugPrint(SC_TAG_RC, " %2d.pcl=0x%08x link=0x%08x %s", i, parcelId, linkId, key[keyflg]);
+	}
+}
+
+/**
+ * @brief 規制コードダンプ
+ */
+void RPDBG_DumpRegulationTime(RCREG_TIME* aTimeReg) {
+	char buf[256] = {};
+	UINT32 i;
+
+	sprintf(buf, " Code=%2d id=%2d pass=0x%04x flag=0x%04x", aTimeReg->code, aTimeReg->id, aTimeReg->pass, aTimeReg->flag);
+	if (0x0010 & aTimeReg->flag) {
+		sprintf(buf, "%s week=", buf);
+		for (i = 0; i < 7; i++) {
+			sprintf(buf, "%s%d", buf, (aTimeReg->week >> i) & 0x0001);
+		}
+	}
+	sprintf(buf, "%s [start", buf);
+	if (0x00C0 & aTimeReg->flag) {
+		sprintf(buf, "%s %02d/%02d", buf, aTimeReg->stMonth, aTimeReg->stDay);
+	}
+	if (0x0100 & aTimeReg->flag) {
+		sprintf(buf, "%s %02d:%02d", buf, aTimeReg->stHour, aTimeReg->stMinute);
+	}
+	sprintf(buf, "%s end", buf);
+	if (0x00C0 & aTimeReg->flag) {
+		sprintf(buf, "%s %02d/%02d", buf, aTimeReg->edMonth, aTimeReg->edDay);
+	}
+	if (0x0100 & aTimeReg->flag) {
+		sprintf(buf, "%s %02d:%02d", buf, aTimeReg->edHour, aTimeReg->edMinute);
+	}
+	SC_LOG_DebugPrint(SC_TAG_RC, " %s]", buf);
 }

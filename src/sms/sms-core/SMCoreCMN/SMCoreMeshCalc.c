@@ -947,6 +947,8 @@ INT32 SC_Lib_ChangeTitude2PID(DOUBLE latitude,		// 変換する緯度（秒）
 		DOUBLE *y				// 変換後の正規化Ｙ座標
 		)
 {
+	return MESHC_ChgLatLonToParcelID(latitude, longitude, level, parcel_id, x, y);
+#if 0
 	// TODO 収録範囲考慮
 	//if(latitude  > (MAP_BASE_latitude  + MAP_latitude_range )  ||  latitude  < (MAP_BASE_latitude ))	return(-1);
 	//if(longitude > (MAP_BASE_longitude + MAP_longitude_range)  ||  longitude < (MAP_BASE_longitude))	return(-1);
@@ -1078,6 +1080,7 @@ INT32 SC_Lib_ChangeTitude2PID(DOUBLE latitude,		// 変換する緯度（秒）
 	*x = w_parcel_x;
 
 	return (0);
+#endif
 }
 
 /**

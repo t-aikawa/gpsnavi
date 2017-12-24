@@ -20,10 +20,8 @@
 /* ダウンロードエリア管理情報 */
 static T_DHC_DOWNLOAD_AREA mDownLoadArea = {};
 
-#if 1	/* AIKAWA */
 static T_DHC_REQ_PARCEL sRPMapReqTab = {};		/* 探索内で唯一の地図リクエスト用変数 */
 static T_DHC_RES_DATA sRPMapResTab = {};			/* 探索内で唯一の地図応答用変数 */
-#endif
 
 /**
  * @brief ダウンロードエリア管理情報取り込み

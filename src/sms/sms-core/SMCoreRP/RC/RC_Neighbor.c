@@ -16,12 +16,8 @@
  */
 
 #include "sms-core/SMCoreRP/SMCoreRPInternal.h"
-
-#if 1	/* AIKAWA */
 static T_DHC_REQ_PARCEL sRPMapReqTab = {};		/* 探索内で唯一の地図リクエスト用変数 */
 //static T_DHC_RES_DATA sRPMapResTab = {};			/* 探索内で唯一の地図応答用変数 */
-#endif
-
 /*-------------------------------------------------------------------
  * 定数定義
  *-------------------------------------------------------------------*/
@@ -494,7 +490,7 @@ E_SC_RESULT RC_NeighborCarPoint(SCRP_SEARCHSETTING* aSetting, SCRP_NEIGHBORINFO*
 	// 中心座標取得（自車位置から）
 	lat = (DOUBLE) aSetting->car.coord.latitude / 1024;
 	lon = (DOUBLE) aSetting->car.coord.longitude / 1024;
-	MESHC_ChgLatLonToParcelID(lat, lon, RP_LEVEL1, &point.parcelId, &x, &y);
+	SC_Lib_ChangeTitude2PID(lat, lon, RP_LEVEL1, &point.parcelId, &x, &y);
 	point.x = (UINT16) x;
 	point.y = (UINT16) y;
 
@@ -839,7 +835,6 @@ static E_SC_RESULT makeNeighborLinkList(RC_CLIPLINKLIST* aLinkList, SCRP_NEIGHBO
 	SC_LOG_DebugPrint(SC_TAG_RC, SC_LOG_START);
 
 	// 道路種別区分判定用配列（国内）
-	//const UINT16 cAnsLinkSize = 30;
 	const UINT16 cSectBlockSize = 3;
 	const UINT16 cSectLinkSize = 10;
 	const UINT16 cSectMustSize = 2;
@@ -1642,7 +1637,6 @@ static E_SC_RESULT setOSideCost(SCRP_NEIGHBORINFO* aNbr, SCRP_SEARCHSETTING* aSe
 static E_SC_RESULT setDSideCost(SCRP_NEIGHBORINFO* aNeighbor) {
 
 	SCRP_NEIGHBORLINK *nLink = NULL;
-	//DOUBLE minCost = 0;
 	UINT32 i;
 
 	if (NULL == aNeighbor || NULL == aNeighbor->neighborLink) {

@@ -30,6 +30,7 @@ typedef struct _SCRP_SEARCHSETTING {
 	Bool isReplan;								// 再探索フラグ
 	UINT8 replanSect;							// 探索開始区間インデックス（再探索）
 	UINT8 useLevel;								// 探索使用レベル
+	SMRPSEARCHTIME routeSearchTime;				// 探索時間
 	Bool cancel;								// true:キャンセル要求あり
 	struct _b_setting {
 		UINT16 reserve :9;						// リザーブ

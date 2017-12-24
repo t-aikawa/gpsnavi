@@ -24,8 +24,9 @@
 #include <navicoredef.h>
 
 // TODO
-#define CORE_VERSION	"0.0.7"
-#define API_VERSION "1.0.20160329-00"
+#define CORE_VERSION	"0.1.0"
+
+#define API_VERSION "1.0.20160420-00"
 
 #ifdef __cplusplus
 extern "C" {
@@ -184,6 +185,7 @@ typedef enum {
 	e_AREA_CLS_MAX		// 地域クラス最大値
 } E_SC_AREA_CLS;
 
+#if 0 // navicoredef.hへ移動
 //-----------------------------------
 // アプリ設定
 //-----------------------------------
@@ -193,6 +195,7 @@ typedef enum {
 #define	SYS_REGION_INIT				0			//
 #define	SYS_REGION_JPN				1			// リージョン：日本
 #define	SYS_REGION_NAM				2			// リージョン：北米
+#endif // navicoredef.hへ移動
 #if 0 // navicoredef.hへ移動
 // 経緯度座標
 typedef struct _SMGEOCOORD {
@@ -201,22 +204,6 @@ typedef struct _SMGEOCOORD {
 } SMGEOCOORD;
 #endif // navicoredef.hへ移動
 
-#if 0 // navicoredefex.hへ移動		AIKAWA.AIKAWA
-// 車両状態情報
-typedef struct _SMCARSTATE {
-	SMGEOCOORD coord;					// 経緯度位置座標
-	FLOAT speed;						// 車両瞬時速度 単位: m/s
-	INT32 dir;							// 車両進行方向 単位:度
-	Bool onRoad;						// 車両位置は道路上か否か（true:道路上にある、false:道路上にない）
-	Bool isRouteSelected;				// 車両位置は経路上か否か（true:経路上にある、false:経路上にない）
-	Char reserve[2];					// 予約
-	INT32 roadClass;					// マッチングした道路クラス
-	INT32 linkId;						// 自車位置のリンクID
-	LONG parcelId;						// 自車位置のパーセルID
-	INT32 parcelDiv;					// 自車位置のパーセル分割識別子
-	Char gpsTime[20];					// 位置情報を取得したGPS時刻
-} SMCARSTATE;
-#endif // navicoredef.hへ移動
 
 // 矩形
 typedef struct _SMRECT {
@@ -395,14 +382,6 @@ typedef struct {
 	INT32 height;						// [I/O]Ｙ方向サイズ
 } SMSCDYNAMICGRAPHISIZE;
 
-#if 0 // navicoredefex.hへ移動		AIKAWA.AIKAWA
-// ユーザ定義アイコンの構造体
-typedef struct _SMMAPDYNUDI {
-	INT32 Longititude;					// 経度座標、値範囲は383385600～619315200
-	INT32 Latitude;						// 緯度座標、値範囲は44236800～201523200
-	INT32 IconID;						// アイコンID
-} SMMAPDYNUDI;
-#endif // navicoredefex.hへ移動
 
 // 拡大図情報
 typedef struct _SMBITMAPINFO {
@@ -490,14 +469,6 @@ typedef enum _SC_MAP_VIEW_MODE {
 } SC_MAP_VIEW_MODE;
 #endif // navicoredef.hへ移動
 
-#if 0 // navicoredef.hへ移動		AIKAWA.AIKAWA
-// ロケーション
-typedef enum _SC_CARLOCATION_TYPE {
-	e_SC_CARLOCATION_NOW = 0,
-	e_SC_CARLOCATION_REAL,			// 実ロケーション
-	e_SC_CARLOCATION_SIMU			// シミュレートロケーション
-} E_SC_CARLOCATION_TYPE;
-#endif // navicoredefex.hへ移動
 
 #ifdef __cplusplus
 }

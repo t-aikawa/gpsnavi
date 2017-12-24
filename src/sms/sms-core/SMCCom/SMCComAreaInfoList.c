@@ -538,11 +538,6 @@ E_SC_RESULT CC_DLVersionInfoDB(SMCAL *smcal,
 								Char *saveFilePath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
-	//Char	*filePath = NULL;
-	//SCC_PROGRESS_FNC	progressCBFnc = NULL;
-	//SCC_DOWNLOADBASEVERSION	*dlBaseVer = NULL;
-	//INT32	dlBaseVerNum = 0;
 	UChar	md5Str[CC_CMN_MD5 * 2] = {};
 	UChar	md5[CC_CMN_MD5] = {};
 	FILE	*fp = NULL;
@@ -646,7 +641,6 @@ E_SC_RESULT CC_GetAreaInfoList_CheckVersion(const SCC_UPDATEDATA *upddata,
 											upDTcheck_States *updateStatus)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//Char	*chr = NULL;
 	CC_APP_VERSION	appVer = {};
 	CC_APP_VERSION	appVerS = {};
 	CC_APP_VERSION	appVerE = {};

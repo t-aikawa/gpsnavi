@@ -79,7 +79,6 @@ E_SC_RESULT CC_AgreeAuthReq_SendRecv(SMCAL* smcal,
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;		// 戻り値(処理結果)
 	E_SC_CAL_RESULT	cal_ret = CC_CMN_RESULT_SMCAL_OK;	// HTTPデータ系処理結果
 	Char* data = NULL;
-	//INT32 resp_sz = 0;						// httpレスポンスサイズ(ヘッダ含む)
 	Char* p_body = NULL;					// httpレスポンスボディ部へのポインタ
 	INT32 body_sz = 0;						// httpレスポンスボディ部サイズ
 	E_CONTEXT_TYPE contextType = E_TEXT_XML;// Content-Type
@@ -542,7 +541,6 @@ E_SC_RESULT CC_AgreeAuthReq_Analy(T_CC_CMN_SMS_API_PRM* pPrm,
 {
 	E_SC_RESULT ret = CC_CMN_RESULT_OK;
 	T_CC_CMN_SMS_RESPONSE_INFO rsp_inf = {};
-	//Char	apiSts[CC_CMN_XML_RES_STS_CODE_SIZE] = {};			// APIステータス
 
 	USE_IT(aBufSz);
 

@@ -45,9 +45,7 @@
 
 
 #define	SCC_MUTEX_INITIALIZER	{}
-#ifndef SC_TAG_CC
-#define	SC_TAG_CC				"SMCC"
-#endif
+#define	SC_TAG_CC				(Char*)"SMCC"
 
 #define	_STR(x)					#x
 #define	_STR2(x)				_STR(x)

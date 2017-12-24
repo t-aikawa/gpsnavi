@@ -24,12 +24,14 @@
 #define _RP_ROUTE_CONVERTLV				(1)			/* 他：経路レベル変換を行う */
 #define _RP_ROUTE_LV2SPLITCHECKADDWP	(1)			/* 他：レベル２を含む経路や断裂経路をチェックしてから経由地追加を行う */
 #define _RP_ROUTE_LV2ROUTESTRIP			(1)			/* 他：レベル２を含む経路や断裂経路をカットする。このフラグを落とし且つMP_DrawRoute.cの一部を有効にすると無効経路のみ断裂表示が可能になります。 */
+#define _RP_REG_INDEFINITE				(0)			/* リンク不定規制コンパイルスイッチ */
 
 #define _ROUTECALC_QUICK_SAMPLE			(0)			/* 探索高速化サンプル処理（パーセル跨ぎネットワーク除去） */
 #define _RPLAPTIME_MAKENET				(0)			/* 性能測定：ネットワーク生成 */
 #define _RPLAPTIME_DIJKSTRA				(0)			/* 性能測定：ダイクストラ */
 #define _RPLAPTIME_MAKECAND				(0)			/* 性能測定：候補経路生成 */
 #define _RPLAPTIME_ROUTEMAKE			(0)			/* 性能測定：推奨経路生成 */
+#define _RPLAPTIME_MAKEREGOFFSET		(0)			/* 性能測定：規制オフセット生成 */
 
 #define _RP_LOG_MASTERROUTE				(0)			/* ログ：推奨経路ダンプ */
 #define _RP_LOG_NEIGBORLINK				(0)			/* ログ：近傍リンクダンプ */
@@ -84,6 +86,42 @@
 #define RM_SETTING_UNUSESIDE			(1)				/* 設定内容未使用面 */
 
 #define RP_DATA_REQ_MAX					(128)			/* TODO データ要求最大値 */
+
+// 規制判定結果
+#define RCREG_RESULT_NOREG				(0x00000000)	/* 規制外:時間的な制約なし */
+#define RCREG_RESULT_REG				(0x00000001)	/* 規制内:時間的な制約なし */
+#define RCREG_RESULT_TIMEREGIN			(0x00000002)	/* 規制内:時間的な制約あり */
+#define RCREG_RESULT_TIMEREGOUT			(0x00000004)	/* 規制外:時間的な制約あり */
+#define RCREG_FLAG_TIMEIN				(0x00000008)	/* 時間規制内 */
+#define RCREG_FLAG_TIMEOUT				(0x00000010)	/* 時間規制外 */
+#define RCREG_FLAG_DATEIN				(0x00000020)	/* 期間規制内 */
+#define RCREG_FLAG_DATEOUT				(0x00000040)	/* 期間規制外 */
+#define RCREG_FLAG_SEASONIN				(0x00000080)	/* 季節規制内 */
+#define RCREG_FLAG_SEASONOUT			(0x00000100)	/* 季節規制外 */
+#define RCREG_FLAG_WEEKIN				(0x00000200)	/* 曜日規制内 */
+#define RCREG_FLAG_WEEKOUT				(0x00000400)	/* 曜日規制外 */
+
+// 規制ID
+#define RCREG_REGID0					(0)				/*  reserve */
+#define RCREG_REGID1					(1)				/* no_left_turn */
+#define RCREG_REGID2					(2)				/* no_right_turn */
+#define RCREG_REGID3					(3)				/* no_straight_on */
+#define RCREG_REGID4					(4)				/* no_u_turn */
+#define RCREG_REGID5					(5)				/* no_entry */
+#define RCREG_REGID6					(6)				/* no_exit */
+#define RCREG_REGID7					(7)				/* only_right_turn */
+#define RCREG_REGID8					(8)				/* only_left_turn */
+#define RCREG_REGID9					(9)				/* only_straight_on */
+#define RCREG_REGID10					(10)			/* open */
+#define RCREG_REGID11					(11)			/* close */
+#define RCREG_REGID12					(12)			/* passage_reguration */
+#define RCREG_REGID13					(13)			/*  reserve */
+#define RCREG_REGID14					(14)			/*  reserve */
+#define RCREG_REGID15					(15)			/* generated_regulation */
+
+#define RCREG_ID_NOENTRY				(RCREG_REGID5)	/* no_entry */
+#define RCREG_ID_NOEXIT					(RCREG_REGID6)	/* no_exit */
+//#define RCREG_ID_INDEFINITE				(RCREG_REGID14)	/* リンク不定規制 */
 
 // 経路探索ステータス
 typedef enum _E_RP_STATE {

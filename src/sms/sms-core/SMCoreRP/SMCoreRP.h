@@ -66,7 +66,8 @@ typedef struct {/*----------------------// リンク情報 ---------------*/
 	UINT32 dist;						// リンク長
 	UINT32 travelTime;					// 平均旅行時間
 	struct {
-		UINT16 reserve:9;
+		UINT16 reserve:8;
+		UINT16 regFlag:1;				// 規制フラグ
 		UINT16 splitFlag:1;				// 断裂リンクフラグ
 		UINT16 termFlag:2;				// 区間始終端リンクフラグ
 		UINT16 orFlag:1;				// リンク方向 0:順 1:逆

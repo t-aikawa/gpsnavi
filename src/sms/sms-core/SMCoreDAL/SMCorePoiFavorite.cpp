@@ -30,7 +30,6 @@ E_PAL_RESULT SC_POI_FAVORITE_TBL_Initialize(const char* db_path) {
 	int rc;
 	sqlite3 *db;
 	sqlite3_stmt *st;
-	//bool rc_bool = false;
 	char *zErrMsg = 0;
 
 	sprintf(poi_db_full_name, "%spoi.db", db_path);

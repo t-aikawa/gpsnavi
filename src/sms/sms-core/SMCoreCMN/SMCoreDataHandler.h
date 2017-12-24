@@ -73,6 +73,7 @@ typedef enum _E_SC_DH_SHARE_DATA_ID {
 	e_SC_DH_SHARE_LANGUAGE,					// 言語
 	e_SC_DH_SHARE_MAPPINGALERT,				// マッピングアラート情報
 	e_SC_DH_SHARE_TRAFFIC,					// 交通情報
+	e_SC_DH_SHARE_RPSEARCHTIME,				// 探索時間
 
 	e_SC_DH_SHARE_DATA_ID_END
 } E_SC_DH_SHARE_DATA_ID;

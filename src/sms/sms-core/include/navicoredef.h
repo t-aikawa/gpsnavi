@@ -125,9 +125,9 @@ typedef unsigned char BYTE;
 /**
  * 規制タイプはRPdefine.RPconstクラスにて定数定義されるものと同値とすること。
  */
-#define	RTU_CAR						0			// 規制タイプ：車規制
-#define	RTU_MOTOR					1			// 規制タイプ：二輪車規制
-#define	RTU_NONE					2			// 規制タイプ：規制無視
+#define	RTU_NONE					0			// 規制タイプ：規制無視
+#define	RTU_CAR						1			// 規制タイプ：車規制
+#define	RTU_MOTOR					2			// 規制タイプ：二輪車規制
 /**
  * 車両タイプはRPdefine.RPconstクラスにて定数定義されるものと同値とすること。
  */
@@ -237,6 +237,16 @@ typedef struct {
 /* 画像ファイル読み込み関数ポインタ */
 typedef INT32 (*NC_IMAGEFUNCPTR)(NCBITMAPINFO* pInfo);
 
+//-----------------------------------
+// アプリ設定
+//-----------------------------------
+#define	SYS_LANGUAGE_INIT			0			//
+#define	SYS_LANGUAGE_JP				1			// 言語：日本語
+#define	SYS_LANGUAGE_EN				2			// 言語：英語
+#define	SYS_REGION_INIT				0			//
+#define	SYS_REGION_JPN				1			// リージョン：日本
+#define	SYS_REGION_NAM				2			// リージョン：北米
+
 /**
  * 経緯度座標
  */
@@ -284,6 +294,19 @@ typedef struct _SMRPTIPINFO {
 } SMRPTIPINFO;
 
 /**
+ * 探索時間
+ */
+typedef struct _SMRPSEARCHTIME {
+	INT16 year;							// 年
+	INT16 mon;							// 月
+	INT16 mday;							// 日
+	INT16 wday;							// 曜日
+	INT16 hour;							// 時
+	INT16 min;							// 分
+	INT16 sec;							// 秒
+} SMRPSEARCHTIME;
+
+/**
  * レーン情報
  */
 typedef struct _SMSINGLELANE {
@@ -317,6 +340,54 @@ typedef struct _SMREALTIMEGUIDEDATA {
 	SMSINGLELANE roadLaneAtGuidePoint[SC_LANE_NUM];	// 案内点のレーン情報
 	SMGEOCOORD coord;					// 交差点座標
 } SMREALTIMEGUIDEDATA;
+
+
+#define NC_MP_MAP_MAIN	(1)		/* 暫定的に定義する By T.Aikawa */
+
+// ロケーション
+typedef enum _SC_CARLOCATION_TYPE {
+	e_SC_CARLOCATION_NOW = 0,
+	e_SC_CARLOCATION_REAL,			// 実ロケーション
+	e_SC_CARLOCATION_SIMU			// シミュレートロケーション
+} E_SC_CARLOCATION_TYPE;
+
+// 車両状態情報
+typedef struct _SMCARSTATE {
+	SMGEOCOORD coord;					// 経緯度位置座標
+	FLOAT speed;						// 車両瞬時速度 単位: m/s
+	INT32 dir;							// 車両進行方向 単位:度
+	Bool onRoad;						// 車両位置は道路上か否か（true:道路上にある、false:道路上にない）
+	Bool isRouteSelected;				// 車両位置は経路上か否か（true:経路上にある、false:経路上にない）
+	Char reserve[2];					// 予約
+	INT32 roadClass;					// マッチングした道路クラス
+	INT32 linkId;						// 自車位置のリンクID
+	LONG parcelId;						// 自車位置のパーセルID
+	INT32 parcelDiv;					// 自車位置のパーセル分割識別子
+	Char gpsTime[20];					// 位置情報を取得したGPS時刻
+} SMCARSTATE;
+
+// ユーザ定義アイコンの構造体
+typedef struct _SMMAPDYNUDI {
+	INT32 Longititude;					// 経度座標、値範囲は383385600～619315200
+	INT32 Latitude;						// 緯度座標、値範囲は44236800～201523200
+	INT32 IconID;						// アイコンID
+} SMMAPDYNUDI;
+
+/**
+ * 描画終了情報
+ */
+typedef struct {
+	INT32		maps;
+	FLOAT		rotate;			// 地図回転角度(北0度 時計回り)
+} NCDRAWENDINFO;
+/* 描画終了時のHMI側処理 */
+typedef INT32 (*NC_DRAWENDINFOFUNCPTR)(NCDRAWENDINFO* pInfo);
+
+INT32 NC_DM_GetCarState(SMCARSTATE *carState, INT32 mode);
+INT32 NC_DM_SetIconInfo(const SMMAPDYNUDI *iconInfo, INT32 iconNum);
+INT32 NC_DM_SetDynamicUDIDisplay(const Bool *dispInfo, INT32 dispNum);
+INT32 NC_MP_ScreenToGeoCode(INT32 maps, INT32 screenX, INT32 screenY, SMGEOCOORD* pGeoCoord);
+INT32 NC_MP_SetMapDrawEndCB(NC_DRAWENDINFOFUNCPTR pfunc);
 
 #include "navicoredefex.h"
 

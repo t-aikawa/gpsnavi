@@ -641,7 +641,6 @@ static E_SC_RESULT makeAreaLv1Top(T_AreaInfo* aOArea, T_AreaInfo* aDArea, T_Area
 		INT32 *aState)
 {
 	E_SC_RESULT result = e_SC_RESULT_SUCCESS;
-	//E_DHC_CASH_RESULT resultDhc = e_DHC_RESULT_CASH_SUCCESS;
 
 	T_AreaInfo topArea = {};
 
@@ -655,7 +654,6 @@ static E_SC_RESULT makeAreaLv1Top(T_AreaInfo* aOArea, T_AreaInfo* aDArea, T_Area
 	UINT8 updateCount = 0;
 
 	INT32 range = AREATOP_RATIO_RANGE;
-	//INT16 patchUpCount = 0;
 
 	if (NULL == aOArea || NULL == aDArea || NULL == aTop || NULL == aAreaDensity || NULL == aState) {
 		SC_LOG_ErrorPrint(SC_TAG_RC, "param error."HERE);

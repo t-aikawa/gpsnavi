@@ -197,11 +197,7 @@ E_SC_RESULT CC_DLRegionInfoDB(SMCAL *smcal,
 								Char *saveFilePath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
-	//Char	*filePath = NULL;
 	SMPROGRESSCBFNC	progressCBFnc = {};
-	//SCC_DOWNLOADBASEVERSION	*dlBaseVer = NULL;
-	//INT32	dlBaseVerNum = 0;
 	UChar	md5Str[CC_CMN_MD5 * 2] = {};
 	UChar	md5[CC_CMN_MD5] = {};
 	FILE	*fp = NULL;

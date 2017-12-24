@@ -16,7 +16,6 @@
  */
 void SC_PU_MsgAnalyze(pthread_msq_msg_t *msg)
 {
-	//E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 
 	SC_LOG_DebugPrint(SC_TAG_PU, SC_LOG_START);
 

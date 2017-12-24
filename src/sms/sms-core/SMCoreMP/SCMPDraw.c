@@ -132,7 +132,6 @@ E_SC_RESULT SC_DRAW_SetViewport(INT32 maps, const SMRECT* rect)
 E_SC_RESULT SC_DRAW_Refresh(INT32 maps)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//SMGEOCOORD geoCoord;
 	T_VIEW_INFO* p_vi;
 
 	LOG_PRINT_START((char*)SC_TAG_MP);
@@ -186,30 +185,13 @@ E_SC_RESULT SC_DRAW_Refresh(INT32 maps)
 	SCMP_DRAW_CarMark();
 
 	MP_GL_PopMatrix();
-
-#if 0
-#if 1 // kana暫定
-	{
-		NCDRAWENDINFO draw_info;
-		void sample_hmi_draw_compass(FLOAT rotate);
-		void sample_hmi_request_update(void);
-
-		sample_hmi_draw_compass(p_vi->rotate);
-
-		sample_hmi_request_update();
-	}
-#endif // kanagawa
-#else
-	{
+	
 		// 暫定		AIKAWA.AIKAWA
 		E_SC_RESULT MP_HMI_runMapDrawEndCB(NCDRAWENDINFO *pInfo);
 		NCDRAWENDINFO draw_info;
 		draw_info.maps		= NC_MP_MAP_MAIN;
 		draw_info.rotate	= p_vi->rotate;
 		MP_HMI_runMapDrawEndCB(&draw_info);
-	}
-#endif
-
 	MP_GL_Flush();
 
 #ifdef _COP_MP_DEBUG
@@ -386,8 +368,6 @@ static E_SC_RESULT SCMP_DRAW_DynamicUDI(void)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
 	INT32 i;
-	//DOUBLE lat;
-	//DOUBLE lon;
 	T_VIEW_INFO* p_vi;
 	FLOAT pt[2];
 
@@ -768,7 +748,6 @@ static E_SC_RESULT SCMP_DRAW_GetFitScreenScaleLevel(DOUBLE centerLat, DOUBLE cen
 	FLOAT		zoomSta = 1.0f;
 	FLOAT		zoomEnd = 1.0f;
 	FLOAT		scaleRange = 0.0f;
-	//Bool		flg = false;
 	FLOAT		distance = 0.0f;
 	FLOAT		accu = 0.01;
 

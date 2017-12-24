@@ -48,7 +48,6 @@ E_SC_RESULT CC_Download(SMCAL *smcal,
 	INT32	status = 0;
 	INT32	num = 0;
 	struct	stat st = {};
-	//Char	apiSts[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 
@@ -216,14 +215,11 @@ E_SC_RESULT CC_DownloadPackage(SMCAL *smcal,
 							   const Char *dlDirPath)
 {
 	E_SC_RESULT	ret = e_SC_RESULT_SUCCESS;
-	//E_SC_CAL_RESULT	calRet = e_SC_CAL_RESULT_SUCCESS;
-	//INT32	num = 0;
 	Char	*fileName = NULL;
 	Char	*dlFilePath = NULL;
 	SMAWSINFO	*aws = NULL;
 	SMPROGRESSCBFNC	callbackFnc = {};
 	time_t	nowTime = {0};
-	//time_t	expires = {0};
 	Char	*chr = NULL;
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
@@ -350,12 +346,10 @@ E_SC_RESULT CC_DownloadFile(SMCAL *smcal,
 	UINT32	bodyLen = 0;
 	SMCALOPT	*opt = NULL;
 	E_CONTEXT_TYPE	contextType = E_APP_BIN;
-	//UChar	*policy = NULL;
 	Char	sigEncode[SC_CAL_SIGNATURE_SIZE * 2] = {};
 	INT32	status = 0;
 	INT32	num = 0;
 	struct	stat st = {};
-	//Char	apiSts[CC_CMN_XML_RES_STS_CODE_SIZE] ={};
 
 	SCC_LOG_DebugPrint(SC_TAG_CC, SCC_LOG_START);
 

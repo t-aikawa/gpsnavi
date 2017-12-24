@@ -59,9 +59,6 @@ E_SC_RESULT SMNameAnalyze::Finalize(void)
 
 E_SC_RESULT SMNameAnalyze::InitName(void)
 {
-	//NAME_HDL h_name;
-	//UINT32 i;
-	//UINT32 disp_name_size;
 
 	// 記号背景要素数
 	m_name_cnt = GetUINT32(m_pName, 4);

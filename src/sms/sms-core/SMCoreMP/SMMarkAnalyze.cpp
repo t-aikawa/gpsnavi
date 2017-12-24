@@ -57,8 +57,6 @@ E_SC_RESULT SMMarkAnalyze::Finalize(void)
 
 E_SC_RESULT SMMarkAnalyze::InitMark(void)
 {
-	//UINT32 i;
-//	UINT32 mark_elm_size;
 
 	// 記号背景要素数
 	m_mark_cnt = GetUINT32(m_pMark, 4);

@@ -237,6 +237,12 @@ E_SC_RESULT RC_MakeNetwork(SCRP_NETCONTROLER *aNetCtrl, SCRP_SECTCONTROLER* aSec
 			break;
 		}
 
+		// 規制オフセット情報格納
+		result = RC_RegSetRegOffset(aSectCtrl, aNetCtrl);
+		if (e_SC_RESULT_SUCCESS != result) {
+			SC_LOG_ErrorPrint(SC_TAG_RC, "setRegOffset error. [0x%08x] "HERE, result);
+			break;
+		}
 	} while (0);
 
 	if (NULL != readTab.mapList) {
@@ -386,6 +392,13 @@ static E_SC_RESULT makeParcelInfo(SCRP_NETCONTROLER *aNetCtrl, SCRP_MAPREADTBL* 
 				}
 				pclInfo->linkVol = pclInfo->linkIdVol + connectIdVol;
 
+				// 規制
+				if (ALL_F32 != SC_MA_D_NWBIN_GET_LINKREG_OFS(binRoad) ) {
+					pclInfo->mapNetworkRegBin = SC_MA_A_NWBIN_GET_REGULATION(binRoad);
+				} else {
+					pclInfo->mapNetworkRegBin = NULL;
+				}
+
 				// update
 				totalLinkVol += pclInfo->linkVol;
 				mapIdx++;
@@ -477,6 +490,8 @@ static E_SC_RESULT makeLinkInfoForId(SCRP_NETCONTROLER *aNetCtrl, SCRP_PCLRECT* 
 
 			// dataIndex
 			linkTab->detaIndex = e;
+			// regOffset 0～
+			linkTab->regOfs = ALL_F32;
 
 			// 接続Index（1始まりなので-1）
 			sameLinkIdx[SCRP_LINKODR] = pLink->sameStIdx - 1;
@@ -872,7 +887,6 @@ static E_SC_RESULT setDownConnectParcelFlag(SCRP_SECTCONTROLER *aSectCtrl, SCRP_
 	}
 
 	UINT32 i;
-	//UINT32 e;
 	SCRP_PCLINFO* pclInfo = NULL;
 	SCRP_PCLRECT *rect = &aSectCtrl->levelTable.areaTable[2].pclRect;
 	UINT32 currentPcl = 0;
